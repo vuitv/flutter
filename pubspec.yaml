@@ -2,10 +2,10 @@ name: vuitv
 description: A Utils Dart package.
 version: 0.0.1+1
 
-homepage: https://vuitv.dev
-repository:
-issue_tracker:
-documentation:
+homepage: https://github.com/vuitv/flutter
+repository: https://github.com/vuitv/flutter.git
+issue_tracker: https://github.com/vuitv/flutter/issues
+documentation: https://github.com/vuitv/flutter
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
