@@ -57,4 +57,14 @@ extension ContextExt on BuildContext {
 
   ///Get screen size
   double get statusbarHeight => MediaQuery.of(this).padding.top;
+
+  ///build reponse object
+  T responsive<T>(T desktop, T mobile, [T? tablet]) {
+    if (isDesktop || (isTablet && tablet == null)) {
+      return desktop;
+    } else if (isTablet && tablet != null) {
+      return tablet;
+    }
+    return mobile;
+  }
 }
