@@ -28,9 +28,9 @@ class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     try {
       var sColor = hexColor;
-      sColor = hexColor.toUpperCase().replaceAll('#', '');
+      sColor = sColor.toUpperCase().replaceAll('#', '');
       if (sColor.length == 6) {
-        sColor = 'FF$hexColor';
+        sColor = 'FF$sColor';
       }
 
       if (sColor.isNotEmpty) {
