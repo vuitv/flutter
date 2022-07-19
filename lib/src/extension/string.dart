@@ -1,7 +1,7 @@
 ///
 extension StringExt on String {
   /// validate image url
-  bool get isImageUrl {
+  bool get isUrl {
     return startsWith('http');
   }
 }
