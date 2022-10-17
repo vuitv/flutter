@@ -1,12 +1,14 @@
-# vuitv
+# vuitv code base
 
 [![Pub][pub_badge]][pub_link]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
 
-A Project created by Very Good CLI.
+A Project created by VuiTv 🤖
 
-[pub_badge]: https://img.shields.io/pub/v/vuitv.svg
+---
+
+[pub_badge]: https://img.shields.io/badge/pub-0.0.4-blue
 [pub_link]: https://pub.dev/packages/vuitv
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

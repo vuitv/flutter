@@ -1,0 +1,48 @@
+{
+  /* "HorizonLayout": [
+    {
+      "layout": "logo",
+      "showMenu": true,
+      "showSearch": true,
+      "showLogo": true
+    },
+    {
+      "layout": "category",
+      "type": "icon",
+      "wrap": false,
+      "size": 1.0,
+      "radius": 50.0,
+      "items": [
+
+      ]
+    },
+    {
+      "layout": "bannerImage",
+      "isSlider": true,
+      "autoPlay": false,
+      "showNumber": false,
+      "design": "default",
+      "showBackGround": true,
+      "radius": 2.0,
+      "items": [
+
+      ]
+    },
+    {
+      "name": "Man Collections",
+      "image": "",
+      "layout": "twoColumn",
+      "category": 21
+    },
+  ],
+  "Setting": {
+    "MainColor": "#3FC1BE",
+    "FontFamily": "Roboto",
+    "FontHeader": "Raleway",
+    "ProductListLayout": "list",
+    "StickyHeader": false,
+  },
+  "TabBar": [
+
+  ] */
+}

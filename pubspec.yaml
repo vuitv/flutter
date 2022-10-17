@@ -1,6 +1,6 @@
 name: vuitv
-description: A Project created by VuiTV.
-version: 0.0.3
+description: A flutter project code base created by VuiTv ................
+version: 0.0.4
 
 homepage: https://github.com/vuitv/flutter
 repository: https://github.com/vuitv/flutter.git
@@ -14,9 +14,18 @@ dependencies:
   flutter:
     sdk: flutter
 
+  freezed_annotation: 2.2.0
   intl: ^0.17.0
 
+
 dev_dependencies:
+  build_runner: ^2.3.0
+
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^2.4.0
+
+  freezed: ^2.2.0
+  json_serializable: ^6.5.1
+  very_good_analysis: ^3.1.0
+
+
