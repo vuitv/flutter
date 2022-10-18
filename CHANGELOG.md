@@ -1,6 +1,10 @@
-## 0.0.5
+## 0.0.7
+* Theme config
+## 0.0.6
 * Add color context extension
 
+## 0.0.5
+* Add color context extension
 
 ## 0.0.4
 * Add app config
