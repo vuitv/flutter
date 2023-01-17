@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_config.dart';
 
@@ -25,31 +25,35 @@ mixin _$AppConfig {
 
 /// @nodoc
 abstract class $AppConfigCopyWith<$Res> {
-  factory $AppConfigCopyWith(AppConfig value, $Res Function(AppConfig) then) = _$AppConfigCopyWithImpl<$Res>;
+  factory $AppConfigCopyWith(AppConfig value, $Res Function(AppConfig) then) =
+      _$AppConfigCopyWithImpl<$Res, AppConfig>;
 }
 
 /// @nodoc
-class _$AppConfigCopyWithImpl<$Res> implements $AppConfigCopyWith<$Res> {
+class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
+    implements $AppConfigCopyWith<$Res> {
   _$AppConfigCopyWithImpl(this._value, this._then);
 
-  final AppConfig _value;
   // ignore: unused_field
-  final $Res Function(AppConfig) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 }
 
 /// @nodoc
 abstract class _$$_AppConfigCopyWith<$Res> {
-  factory _$$_AppConfigCopyWith(_$_AppConfig value, $Res Function(_$_AppConfig) then) =
+  factory _$$_AppConfigCopyWith(
+          _$_AppConfig value, $Res Function(_$_AppConfig) then) =
       __$$_AppConfigCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_AppConfigCopyWithImpl<$Res> extends _$AppConfigCopyWithImpl<$Res> implements _$$_AppConfigCopyWith<$Res> {
-  __$$_AppConfigCopyWithImpl(_$_AppConfig _value, $Res Function(_$_AppConfig) _then)
-      : super(_value, (v) => _then(v as _$_AppConfig));
-
-  @override
-  _$_AppConfig get _value => super._value as _$_AppConfig;
+class __$$_AppConfigCopyWithImpl<$Res>
+    extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
+    implements _$$_AppConfigCopyWith<$Res> {
+  __$$_AppConfigCopyWithImpl(
+      _$_AppConfig _value, $Res Function(_$_AppConfig) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
@@ -57,7 +61,8 @@ class __$$_AppConfigCopyWithImpl<$Res> extends _$AppConfigCopyWithImpl<$Res> imp
 class _$_AppConfig implements _AppConfig {
   const _$_AppConfig();
 
-  factory _$_AppConfig.fromJson(Map<String, dynamic> json) => _$$_AppConfigFromJson(json);
+  factory _$_AppConfig.fromJson(Map<String, dynamic> json) =>
+      _$$_AppConfigFromJson(json);
 
   @override
   String toString() {
@@ -66,7 +71,8 @@ class _$_AppConfig implements _AppConfig {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is _$_AppConfig);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_AppConfig);
   }
 
   @JsonKey(ignore: true)
@@ -75,12 +81,15 @@ class _$_AppConfig implements _AppConfig {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AppConfigToJson(this);
+    return _$$_AppConfigToJson(
+      this,
+    );
   }
 }
 
 abstract class _AppConfig implements AppConfig {
   const factory _AppConfig() = _$_AppConfig;
 
-  factory _AppConfig.fromJson(Map<String, dynamic> json) = _$_AppConfig.fromJson;
+  factory _AppConfig.fromJson(Map<String, dynamic> json) =
+      _$_AppConfig.fromJson;
 }

@@ -27,7 +27,4 @@ class HexColor extends Color {
   static int _getColorFromHex(String? hexColor) {
     return fromJson(hexColor)?.value ?? 0xFFFFFFFF;
   }
-
-  ///
-  String toJson() => super.value.toRadixString(16);
 }

@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'server_config.dart';
 
@@ -24,60 +24,69 @@ mixin _$ServerConfig {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ServerConfigCopyWith<ServerConfig> get copyWith => throw _privateConstructorUsedError;
+  $ServerConfigCopyWith<ServerConfig> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ServerConfigCopyWith<$Res> {
-  factory $ServerConfigCopyWith(ServerConfig value, $Res Function(ServerConfig) then) =
-      _$ServerConfigCopyWithImpl<$Res>;
+  factory $ServerConfigCopyWith(
+          ServerConfig value, $Res Function(ServerConfig) then) =
+      _$ServerConfigCopyWithImpl<$Res, ServerConfig>;
+  @useResult
   $Res call({String url});
 }
 
 /// @nodoc
-class _$ServerConfigCopyWithImpl<$Res> implements $ServerConfigCopyWith<$Res> {
+class _$ServerConfigCopyWithImpl<$Res, $Val extends ServerConfig>
+    implements $ServerConfigCopyWith<$Res> {
   _$ServerConfigCopyWithImpl(this._value, this._then);
 
-  final ServerConfig _value;
   // ignore: unused_field
-  final $Res Function(ServerConfig) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? url = freezed,
+    Object? url = null,
   }) {
     return _then(_value.copyWith(
-      url: url == freezed
+      url: null == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_ServerConfigCopyWith<$Res> implements $ServerConfigCopyWith<$Res> {
-  factory _$$_ServerConfigCopyWith(_$_ServerConfig value, $Res Function(_$_ServerConfig) then) =
+abstract class _$$_ServerConfigCopyWith<$Res>
+    implements $ServerConfigCopyWith<$Res> {
+  factory _$$_ServerConfigCopyWith(
+          _$_ServerConfig value, $Res Function(_$_ServerConfig) then) =
       __$$_ServerConfigCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String url});
 }
 
 /// @nodoc
-class __$$_ServerConfigCopyWithImpl<$Res> extends _$ServerConfigCopyWithImpl<$Res>
+class __$$_ServerConfigCopyWithImpl<$Res>
+    extends _$ServerConfigCopyWithImpl<$Res, _$_ServerConfig>
     implements _$$_ServerConfigCopyWith<$Res> {
-  __$$_ServerConfigCopyWithImpl(_$_ServerConfig _value, $Res Function(_$_ServerConfig) _then)
-      : super(_value, (v) => _then(v as _$_ServerConfig));
+  __$$_ServerConfigCopyWithImpl(
+      _$_ServerConfig _value, $Res Function(_$_ServerConfig) _then)
+      : super(_value, _then);
 
-  @override
-  _$_ServerConfig get _value => super._value as _$_ServerConfig;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? url = freezed,
+    Object? url = null,
   }) {
     return _then(_$_ServerConfig(
-      url: url == freezed
+      url: null == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as String,
@@ -90,7 +99,8 @@ class __$$_ServerConfigCopyWithImpl<$Res> extends _$ServerConfigCopyWithImpl<$Re
 class _$_ServerConfig implements _ServerConfig {
   const _$_ServerConfig({this.url = ''});
 
-  factory _$_ServerConfig.fromJson(Map<String, dynamic> json) => _$$_ServerConfigFromJson(json);
+  factory _$_ServerConfig.fromJson(Map<String, dynamic> json) =>
+      _$$_ServerConfigFromJson(json);
 
   @override
   @JsonKey()
@@ -106,32 +116,37 @@ class _$_ServerConfig implements _ServerConfig {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ServerConfig &&
-            const DeepCollectionEquality().equals(other.url, url));
+            (identical(other.url, url) || other.url == url));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(url));
+  int get hashCode => Object.hash(runtimeType, url);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_ServerConfigCopyWith<_$_ServerConfig> get copyWith =>
       __$$_ServerConfigCopyWithImpl<_$_ServerConfig>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ServerConfigToJson(this);
+    return _$$_ServerConfigToJson(
+      this,
+    );
   }
 }
 
 abstract class _ServerConfig implements ServerConfig {
   const factory _ServerConfig({final String url}) = _$_ServerConfig;
 
-  factory _ServerConfig.fromJson(Map<String, dynamic> json) = _$_ServerConfig.fromJson;
+  factory _ServerConfig.fromJson(Map<String, dynamic> json) =
+      _$_ServerConfig.fromJson;
 
   @override
-  String get url => throw _privateConstructorUsedError;
+  String get url;
   @override
   @JsonKey(ignore: true)
-  _$$_ServerConfigCopyWith<_$_ServerConfig> get copyWith => throw _privateConstructorUsedError;
+  _$$_ServerConfigCopyWith<_$_ServerConfig> get copyWith =>
+      throw _privateConstructorUsedError;
 }
