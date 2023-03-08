@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class CurrencyInputFormatter extends CurrencyTextInputFormatter {
   ///
   CurrencyInputFormatter.us({
-    super.locale = 'us',
+    super.locale = 'en',
     super.symbol = r'$',
     super.decimalDigits = 2,
   });

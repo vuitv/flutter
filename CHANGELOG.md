@@ -1,3 +1,6 @@
+# 0.1.2
+* bug: CurrencyInputFormatter local us -> en
+
 # 0.1.1
 * feat: JsonConverter() function 🎉
 * feat: TextInputFormatter() function 🎉
