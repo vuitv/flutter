@@ -1,5 +1,10 @@
+# 0.1.1
+* feat: JsonConverter() function 🎉
+* feat: TextInputFormatter() function 🎉
+
 ## 0.0.7
 * Theme config
+
 ## 0.0.6
 * Add color context extension
 

@@ -72,13 +72,13 @@ extension MapExt on Map<String, dynamic> {
     MapFactoryFunction<T> builder,
   ) {
     if (this == null) return <T>[];
-    final list = getValue<List>(key) ?? <T>[];
+    final list = getValue<List<dynamic>>(key) ?? <T>[];
     return tryGetListObject(list, builder);
   }
 
   ///Try builder value list object
   List<T> tryGetListObject<T>(
-    List json,
+    List<dynamic> json,
     MapFactoryFunction<T> builder,
   ) {
     final list = <T>[];

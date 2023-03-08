@@ -149,6 +149,13 @@
             </list>
           </value>
         </entry>
+        <entry key="currency_text_input_formatter">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/currency_text_input_formatter-2.1.9/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="dart_style">
           <value>
             <list>
@@ -180,7 +187,7 @@
         <entry key="flutter">
           <value>
             <list>
-              <option value="$USER_HOME$/fvm/versions/3.7.3/packages/flutter/lib" />
+              <option value="$USER_HOME$/fvm/versions/stable/packages/flutter/lib" />
             </list>
           </value>
         </entry>
@@ -194,7 +201,7 @@
         <entry key="flutter_test">
           <value>
             <list>
-              <option value="$USER_HOME$/fvm/versions/3.7.3/packages/flutter_test/lib" />
+              <option value="$USER_HOME$/fvm/versions/stable/packages/flutter_test/lib" />
             </list>
           </value>
         </entry>
@@ -377,7 +384,7 @@
         <entry key="sky_engine">
           <value>
             <list>
-              <option value="$USER_HOME$/fvm/versions/3.7.3/bin/cache/pkg/sky_engine/lib" />
+              <option value="$USER_HOME$/fvm/versions/stable/bin/cache/pkg/sky_engine/lib" />
             </list>
           </value>
         </entry>
@@ -517,6 +524,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/convert-3.1.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/crypto-3.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.4/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/currency_text_input_formatter-2.1.9/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/dart_style-2.2.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/fake_async-1.3.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/file-6.1.4/lib" />
@@ -564,9 +572,9 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/watcher-1.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/yaml-3.1.1/lib" />
-      <root url="file://$USER_HOME$/fvm/versions/3.7.3/bin/cache/pkg/sky_engine/lib" />
-      <root url="file://$USER_HOME$/fvm/versions/3.7.3/packages/flutter/lib" />
-      <root url="file://$USER_HOME$/fvm/versions/3.7.3/packages/flutter_test/lib" />
+      <root url="file://$USER_HOME$/fvm/versions/stable/bin/cache/pkg/sky_engine/lib" />
+      <root url="file://$USER_HOME$/fvm/versions/stable/packages/flutter/lib" />
+      <root url="file://$USER_HOME$/fvm/versions/stable/packages/flutter_test/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
