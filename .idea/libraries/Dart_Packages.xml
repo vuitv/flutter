@@ -278,8 +278,8 @@
         <entry key="json_annotation">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.7.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.8.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.7.0/lib" />
             </list>
           </value>
         </entry>

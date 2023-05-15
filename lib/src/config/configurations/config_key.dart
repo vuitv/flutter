@@ -3,6 +3,8 @@ part of '../config.dart';
 class ConfigKey {
   static const environment = 'environment';
   static const baseUrl = 'baseUrl';
+  static const socketUrl = 'socketUrl';
+  static const mediaUrl = 'mediaUrl';
   static const appName = 'appName';
   static const defaultLanguage = 'defaultLanguage';
   static const appConfig = 'appConfig';

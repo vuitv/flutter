@@ -7,22 +7,26 @@ export 'model/server_config.dart';
 export 'model/theme_config.dart';
 
 part 'configurations/config_key.dart';
+
 part 'configurations/configurations.dart';
+
 part 'configurations/default_env.dart';
 
 ///
 class Config {
   static String get environments => Configurations._environment;
 
-  static String get version => Configurations._version;
+  static ServerConfig get serverConfig => ServerConfig.fromJson(Configurations._serverConfig);
 
   static Uri get baseUrl => Uri.parse(Configurations._baseUrl);
+
+  static Uri get socketUrl => Uri.parse(Configurations._socketUrl);
+
+  static Uri get mediaUrl => Uri.parse(Configurations._mediaUrl);
 
   static String get appName => Configurations._appName;
 
   static String get defaultLanguage => Configurations._defaultLanguage;
-
-  static ServerConfig get serverConfig => ServerConfig.fromJson(Configurations._serverConfig);
 
   static AppConfig get appConfig => AppConfig.fromJson(Configurations._appConfig);
 

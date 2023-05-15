@@ -1,3 +1,6 @@
+# 0.3.0
+* feat: Add Config const 🎉
+
 # 0.1.2
 * bug: CurrencyInputFormatter local us -> en
 
