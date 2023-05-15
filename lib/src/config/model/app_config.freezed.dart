@@ -25,11 +25,13 @@ mixin _$AppConfig {
 
 /// @nodoc
 abstract class $AppConfigCopyWith<$Res> {
-  factory $AppConfigCopyWith(AppConfig value, $Res Function(AppConfig) then) = _$AppConfigCopyWithImpl<$Res, AppConfig>;
+  factory $AppConfigCopyWith(AppConfig value, $Res Function(AppConfig) then) =
+      _$AppConfigCopyWithImpl<$Res, AppConfig>;
 }
 
 /// @nodoc
-class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig> implements $AppConfigCopyWith<$Res> {
+class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
+    implements $AppConfigCopyWith<$Res> {
   _$AppConfigCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -40,14 +42,18 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig> implements $AppConfi
 
 /// @nodoc
 abstract class _$$_AppConfigCopyWith<$Res> {
-  factory _$$_AppConfigCopyWith(_$_AppConfig value, $Res Function(_$_AppConfig) then) =
+  factory _$$_AppConfigCopyWith(
+          _$_AppConfig value, $Res Function(_$_AppConfig) then) =
       __$$_AppConfigCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_AppConfigCopyWithImpl<$Res> extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
+class __$$_AppConfigCopyWithImpl<$Res>
+    extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
     implements _$$_AppConfigCopyWith<$Res> {
-  __$$_AppConfigCopyWithImpl(_$_AppConfig _value, $Res Function(_$_AppConfig) _then) : super(_value, _then);
+  __$$_AppConfigCopyWithImpl(
+      _$_AppConfig _value, $Res Function(_$_AppConfig) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
@@ -55,7 +61,8 @@ class __$$_AppConfigCopyWithImpl<$Res> extends _$AppConfigCopyWithImpl<$Res, _$_
 class _$_AppConfig implements _AppConfig {
   const _$_AppConfig();
 
-  factory _$_AppConfig.fromJson(Map<String, dynamic> json) => _$$_AppConfigFromJson(json);
+  factory _$_AppConfig.fromJson(Map<String, dynamic> json) =>
+      _$$_AppConfigFromJson(json);
 
   @override
   String toString() {
@@ -64,7 +71,8 @@ class _$_AppConfig implements _AppConfig {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is _$_AppConfig);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_AppConfig);
   }
 
   @JsonKey(ignore: true)
@@ -82,5 +90,6 @@ class _$_AppConfig implements _AppConfig {
 abstract class _AppConfig implements AppConfig {
   const factory _AppConfig() = _$_AppConfig;
 
-  factory _AppConfig.fromJson(Map<String, dynamic> json) = _$_AppConfig.fromJson;
+  factory _AppConfig.fromJson(Map<String, dynamic> json) =
+      _$_AppConfig.fromJson;
 }
