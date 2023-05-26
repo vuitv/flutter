@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 ///
@@ -136,5 +137,75 @@ class UpperCaseInputFormatter extends TextInputFormatter {
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
     );
+  }
+}
+
+///
+class TextCapitalizationFormatter extends TextInputFormatter {
+  ///
+  const TextCapitalizationFormatter()
+      : capitalization = TextCapitalization.none;
+
+  ///
+  const TextCapitalizationFormatter.words()
+      : capitalization = TextCapitalization.words;
+
+  ///
+  const TextCapitalizationFormatter.sentences()
+      : capitalization = TextCapitalization.sentences;
+
+  ///
+  const TextCapitalizationFormatter.characters()
+      : capitalization = TextCapitalization.characters;
+
+  ///
+  final TextCapitalization capitalization;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var text = '';
+
+    switch (capitalization) {
+      case TextCapitalization.words:
+        text = newValue.text.split(' ').map(inCaps).join(' ');
+        break;
+      case TextCapitalization.sentences:
+        final sentences = newValue.text.split('.');
+        for (var i = 0; i < sentences.length; i++) {
+          sentences[i] = inCaps(sentences[i]);
+        }
+        text = sentences.join('.');
+        break;
+      case TextCapitalization.characters:
+        text = newValue.text.toUpperCase();
+        break;
+      case TextCapitalization.none:
+        text = newValue.text;
+        break;
+    }
+    return TextEditingValue(
+      text: text,
+      selection: newValue.selection,
+    );
+  }
+
+  ///
+  static String inCaps(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    var result = '';
+    for (var i = 0; i < text.length; i++) {
+      if (text[i] != ' ') {
+        result += '${text[i].toUpperCase()}${text.substring(i + 1)}';
+        break;
+      } else {
+        result += text[i];
+      }
+    }
+    return result;
   }
 }
