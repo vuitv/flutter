@@ -44,7 +44,7 @@ class Responsive extends StatelessWidget {
 ///Context layout extension
 extension ContextExt on BuildContext {
   ///Get screen size
-  Size get screen => MediaQuery.of(this).size;
+  Size get screen => MediaQuery.sizeOf(this);
 
   ///
   bool get isMobile => Responsive.isMobile(this);
@@ -56,9 +56,9 @@ extension ContextExt on BuildContext {
   bool get isDesktop => Responsive.isDesktop(this);
 
   ///Get screen size
-  double get statusbarHeight => MediaQuery.of(this).padding.top;
+  double get statusbarHeight => MediaQuery.paddingOf(this).top;
 
-  ///build reponse object
+  ///build response object
   T responsive<T>(T desktop, T mobile, [T? tablet]) {
     if (isDesktop || (isTablet && tablet == null)) {
       return desktop;

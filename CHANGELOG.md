@@ -1,3 +1,6 @@
+# 3.10.0
+* feat: MediaQuery in Flutter 3.10 🎉
+
 # 0.3.2
 * feat: BuildContextExtensions 🎉
 
