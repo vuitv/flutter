@@ -1,32 +1,54 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 ///
-class CurrencyInputFormatter extends CurrencyTextInputFormatter {
+class CurrencyInputFormatter {
   ///
-  CurrencyInputFormatter.us({
-    super.locale = 'en',
-    super.symbol = r'$',
-    super.decimalDigits = 2,
-  });
+  static CurrencyTextInputFormatter us() {
+    return CurrencyTextInputFormatter.currency(
+      locale: 'en',
+      symbol: r'$',
+      decimalDigits: 2,
+    );
+  }
 
   ///
-  CurrencyInputFormatter.vn({
-    super.locale = 'vi',
-    super.symbol = '₫',
-    super.decimalDigits = 0,
-  });
+  static CurrencyTextInputFormatter vn() {
+    return CurrencyTextInputFormatter.currency(
+      locale: 'vi',
+      symbol: '₫',
+      decimalDigits: 0,
+    );
+  }
 }
 
 ///
-class NumberDigitsInputFormatter extends CurrencyTextInputFormatter {
+class NumberDigitsInputFormatter extends TextInputFormatter {
   ///
-  NumberDigitsInputFormatter({
-    super.locale = 'vi',
-    super.symbol = '',
-    super.decimalDigits = 0,
-  });
+  NumberDigitsInputFormatter();
+
+  ///
+  NumberFormat get format {
+    return NumberFormat.currency(
+      locale: 'vi',
+      symbol: '',
+      decimalDigits: 0,
+    );
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final s = format.format(newValue.text);
+    return TextEditingValue(
+      text: s,
+      selection: TextSelection.collapsed(offset: s.length),
+    );
+  }
 }
 
 ///
@@ -141,20 +163,16 @@ class UpperCaseInputFormatter extends TextInputFormatter {
 ///
 class TextCapitalizationFormatter extends TextInputFormatter {
   ///
-  const TextCapitalizationFormatter()
-      : capitalization = TextCapitalization.none;
+  const TextCapitalizationFormatter() : capitalization = TextCapitalization.none;
 
   ///
-  const TextCapitalizationFormatter.words()
-      : capitalization = TextCapitalization.words;
+  const TextCapitalizationFormatter.words() : capitalization = TextCapitalization.words;
 
   ///
-  const TextCapitalizationFormatter.sentences()
-      : capitalization = TextCapitalization.sentences;
+  const TextCapitalizationFormatter.sentences() : capitalization = TextCapitalization.sentences;
 
   ///
-  const TextCapitalizationFormatter.characters()
-      : capitalization = TextCapitalization.characters;
+  const TextCapitalizationFormatter.characters() : capitalization = TextCapitalization.characters;
 
   ///
   final TextCapitalization capitalization;

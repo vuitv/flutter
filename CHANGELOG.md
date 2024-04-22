@@ -1,3 +1,6 @@
+# 3.19.0
+* update: currency_text_input_formatter, flutter 3.19.0
+
 # 3.10.0
 * feat: MediaQuery in Flutter 3.10 🎉
 
