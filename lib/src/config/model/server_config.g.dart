@@ -6,12 +6,12 @@ part of 'server_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_ServerConfig _$$_ServerConfigFromJson(Map<String, dynamic> json) =>
-    _$_ServerConfig(
+_$ServerConfigImpl _$$ServerConfigImplFromJson(Map<String, dynamic> json) =>
+    _$ServerConfigImpl(
       url: json['url'] as String? ?? '',
     );
 
-Map<String, dynamic> _$$_ServerConfigToJson(_$_ServerConfig instance) =>
+Map<String, dynamic> _$$ServerConfigImplToJson(_$ServerConfigImpl instance) =>
     <String, dynamic>{
       'url': instance.url,
     };

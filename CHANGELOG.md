@@ -1,3 +1,6 @@
+# 3.19.1
+* fix: currency_text_input_formatter
+
 # 3.19.0
 * update: currency_text_input_formatter, flutter 3.19.0
 

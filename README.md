@@ -8,7 +8,7 @@ A Project created by VuiTv 🤖
 
 ---
 
-[pub_badge]: https://img.shields.io/badge/pub-3.10.0-blue
+[pub_badge]: https://img.shields.io/badge/pub-3.19.1-blue
 [pub_link]: https://pub.dev/packages/vuitv
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

@@ -12,7 +12,7 @@ part of 'server_config.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 ServerConfig _$ServerConfigFromJson(Map<String, dynamic> json) {
   return _ServerConfig.fromJson(json);
@@ -62,22 +62,22 @@ class _$ServerConfigCopyWithImpl<$Res, $Val extends ServerConfig>
 }
 
 /// @nodoc
-abstract class _$$_ServerConfigCopyWith<$Res>
+abstract class _$$ServerConfigImplCopyWith<$Res>
     implements $ServerConfigCopyWith<$Res> {
-  factory _$$_ServerConfigCopyWith(
-          _$_ServerConfig value, $Res Function(_$_ServerConfig) then) =
-      __$$_ServerConfigCopyWithImpl<$Res>;
+  factory _$$ServerConfigImplCopyWith(
+          _$ServerConfigImpl value, $Res Function(_$ServerConfigImpl) then) =
+      __$$ServerConfigImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String url});
 }
 
 /// @nodoc
-class __$$_ServerConfigCopyWithImpl<$Res>
-    extends _$ServerConfigCopyWithImpl<$Res, _$_ServerConfig>
-    implements _$$_ServerConfigCopyWith<$Res> {
-  __$$_ServerConfigCopyWithImpl(
-      _$_ServerConfig _value, $Res Function(_$_ServerConfig) _then)
+class __$$ServerConfigImplCopyWithImpl<$Res>
+    extends _$ServerConfigCopyWithImpl<$Res, _$ServerConfigImpl>
+    implements _$$ServerConfigImplCopyWith<$Res> {
+  __$$ServerConfigImplCopyWithImpl(
+      _$ServerConfigImpl _value, $Res Function(_$ServerConfigImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -85,7 +85,7 @@ class __$$_ServerConfigCopyWithImpl<$Res>
   $Res call({
     Object? url = null,
   }) {
-    return _then(_$_ServerConfig(
+    return _then(_$ServerConfigImpl(
       url: null == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
@@ -96,11 +96,11 @@ class __$$_ServerConfigCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ServerConfig implements _ServerConfig {
-  const _$_ServerConfig({this.url = ''});
+class _$ServerConfigImpl implements _ServerConfig {
+  const _$ServerConfigImpl({this.url = ''});
 
-  factory _$_ServerConfig.fromJson(Map<String, dynamic> json) =>
-      _$$_ServerConfigFromJson(json);
+  factory _$ServerConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ServerConfigImplFromJson(json);
 
   @override
   @JsonKey()
@@ -112,10 +112,10 @@ class _$_ServerConfig implements _ServerConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ServerConfig &&
+            other is _$ServerConfigImpl &&
             (identical(other.url, url) || other.url == url));
   }
 
@@ -126,27 +126,27 @@ class _$_ServerConfig implements _ServerConfig {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ServerConfigCopyWith<_$_ServerConfig> get copyWith =>
-      __$$_ServerConfigCopyWithImpl<_$_ServerConfig>(this, _$identity);
+  _$$ServerConfigImplCopyWith<_$ServerConfigImpl> get copyWith =>
+      __$$ServerConfigImplCopyWithImpl<_$ServerConfigImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ServerConfigToJson(
+    return _$$ServerConfigImplToJson(
       this,
     );
   }
 }
 
 abstract class _ServerConfig implements ServerConfig {
-  const factory _ServerConfig({final String url}) = _$_ServerConfig;
+  const factory _ServerConfig({final String url}) = _$ServerConfigImpl;
 
   factory _ServerConfig.fromJson(Map<String, dynamic> json) =
-      _$_ServerConfig.fromJson;
+      _$ServerConfigImpl.fromJson;
 
   @override
   String get url;
   @override
   @JsonKey(ignore: true)
-  _$$_ServerConfigCopyWith<_$_ServerConfig> get copyWith =>
+  _$$ServerConfigImplCopyWith<_$ServerConfigImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

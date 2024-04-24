@@ -6,7 +6,8 @@ part of 'app_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_AppConfig _$$_AppConfigFromJson(Map<String, dynamic> json) => _$_AppConfig();
+_$AppConfigImpl _$$AppConfigImplFromJson(Map<String, dynamic> json) =>
+    _$AppConfigImpl();
 
-Map<String, dynamic> _$$_AppConfigToJson(_$_AppConfig instance) =>
+Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
     <String, dynamic>{};

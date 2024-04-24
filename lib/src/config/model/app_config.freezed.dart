@@ -12,7 +12,7 @@ part of 'app_config.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 AppConfig _$AppConfigFromJson(Map<String, dynamic> json) {
   return _AppConfig.fromJson(json);
@@ -41,28 +41,28 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
 }
 
 /// @nodoc
-abstract class _$$_AppConfigCopyWith<$Res> {
-  factory _$$_AppConfigCopyWith(
-          _$_AppConfig value, $Res Function(_$_AppConfig) then) =
-      __$$_AppConfigCopyWithImpl<$Res>;
+abstract class _$$AppConfigImplCopyWith<$Res> {
+  factory _$$AppConfigImplCopyWith(
+          _$AppConfigImpl value, $Res Function(_$AppConfigImpl) then) =
+      __$$AppConfigImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_AppConfigCopyWithImpl<$Res>
-    extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
-    implements _$$_AppConfigCopyWith<$Res> {
-  __$$_AppConfigCopyWithImpl(
-      _$_AppConfig _value, $Res Function(_$_AppConfig) _then)
+class __$$AppConfigImplCopyWithImpl<$Res>
+    extends _$AppConfigCopyWithImpl<$Res, _$AppConfigImpl>
+    implements _$$AppConfigImplCopyWith<$Res> {
+  __$$AppConfigImplCopyWithImpl(
+      _$AppConfigImpl _value, $Res Function(_$AppConfigImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_AppConfig implements _AppConfig {
-  const _$_AppConfig();
+class _$AppConfigImpl implements _AppConfig {
+  const _$AppConfigImpl();
 
-  factory _$_AppConfig.fromJson(Map<String, dynamic> json) =>
-      _$$_AppConfigFromJson(json);
+  factory _$AppConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AppConfigImplFromJson(json);
 
   @override
   String toString() {
@@ -70,9 +70,9 @@ class _$_AppConfig implements _AppConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_AppConfig);
+        (other.runtimeType == runtimeType && other is _$AppConfigImpl);
   }
 
   @JsonKey(ignore: true)
@@ -81,15 +81,15 @@ class _$_AppConfig implements _AppConfig {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AppConfigToJson(
+    return _$$AppConfigImplToJson(
       this,
     );
   }
 }
 
 abstract class _AppConfig implements AppConfig {
-  const factory _AppConfig() = _$_AppConfig;
+  const factory _AppConfig() = _$AppConfigImpl;
 
   factory _AppConfig.fromJson(Map<String, dynamic> json) =
-      _$_AppConfig.fromJson;
+      _$AppConfigImpl.fromJson;
 }
