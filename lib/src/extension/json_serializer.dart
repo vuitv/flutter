@@ -2,12 +2,18 @@
 
 import 'package:vuitv/src/utils/logs.dart';
 
-///Map Factory function
+/// Type definition for a function that creates an object of type T from a Map
 typedef MapFactoryFunction<T> = T Function(Map<String, dynamic>);
 
-///Parse json serializer
+/// Extension methods for Map<String, dynamic> to help with
+/// JSON parsing and type conversion
 extension MapExt on Map<String, dynamic> {
-  ///Try get value
+  /// Gets a value of type T from the map for the given key
+  ///
+  /// Returns null if:
+  /// - The map is null
+  /// - The key doesn't exist
+  /// - The value cannot be cast to type T
   T? getValue<T>(String key) {
     try {
       if (this == null) return null;
@@ -18,7 +24,10 @@ extension MapExt on Map<String, dynamic> {
     return null;
   }
 
-  ///Try get value int
+  /// Gets an integer value from the map for the given key
+  ///
+  /// Handles both numeric and string values that represent integers
+  /// Returns null if the value cannot be converted to an integer
   int? getInt(String key) {
     if (this == null) return null;
     final dynamic value = getValue<dynamic>(key);
@@ -27,7 +36,10 @@ extension MapExt on Map<String, dynamic> {
     return null;
   }
 
-  ///Try get value double
+  /// Gets a double value from the map for the given key
+  ///
+  /// Handles both numeric and string values that represent doubles
+  /// Returns null if the value cannot be converted to a double
   double? getDouble(String key) {
     if (this == null) return null;
     final dynamic value = getValue<dynamic>(key);
@@ -36,13 +48,16 @@ extension MapExt on Map<String, dynamic> {
     return null;
   }
 
-  ///Try get value string
+  /// Gets a string value from the map for the given key
   String? getString(String key) => getValue<String>(key);
 
-  ///Try get value bool
+  /// Gets a boolean value from the map for the given key
   bool? getBool(String key) => getValue<bool>(key);
 
-  ///Try get value date time
+  /// Gets a DateTime value from the map for the given key
+  ///
+  /// Attempts to parse string values as DateTime
+  /// Returns null if the value cannot be parsed to DateTime
   DateTime? getDateTime(String key) {
     if (this == null) return null;
     final dynamic value = getValue<dynamic>(key);
@@ -50,12 +65,15 @@ extension MapExt on Map<String, dynamic> {
     return null;
   }
 
-  ///Try get value map
+  /// Gets a nested map value from the map for the given key
   Map<String, dynamic>? getMap(String key) {
     return getValue<Map<String, dynamic>>(key);
   }
 
-  ///Try builder value object
+  /// Attempts to build an object of type T from a nested map at the given key
+  ///
+  /// Uses the provided builder function to create the object
+  /// Returns null if the value is not a valid map
   T? tryGetObject<T>(
     String key,
     MapFactoryFunction<T> builder,
@@ -66,7 +84,11 @@ extension MapExt on Map<String, dynamic> {
     return null;
   }
 
-  ///Try builder value list
+  /// Attempts to build a list of objects of type T from an array at the
+  /// given key
+  ///
+  /// Uses the provided builder function to create each object
+  /// Returns an empty list if the key doesn't exist or value is not a list
   List<T> tryGetList<T>(
     String key,
     MapFactoryFunction<T> builder,
@@ -76,7 +98,10 @@ extension MapExt on Map<String, dynamic> {
     return tryGetListObject(list, builder);
   }
 
-  ///Try builder value list object
+  /// Attempts to build a list of objects of type T from a dynamic list
+  ///
+  /// Uses the provided builder function to create each object from map elements
+  /// Skips any elements that are not valid maps
   List<T> tryGetListObject<T>(
     List<dynamic> json,
     MapFactoryFunction<T> builder,

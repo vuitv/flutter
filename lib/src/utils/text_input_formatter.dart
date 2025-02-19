@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-///
+/// A utility class for formatting currency input in different locales.
 class CurrencyInputFormatter {
+  /// Creates a US currency formatter with dollar symbol and 2 decimal places.
   ///
+  /// Returns a [CurrencyTextInputFormatter] configured for US dollars ($)
+  /// with English locale and 2 decimal digits.
   static CurrencyTextInputFormatter us() {
     return CurrencyTextInputFormatter.currency(
       locale: 'en',
@@ -14,27 +17,36 @@ class CurrencyInputFormatter {
     );
   }
 
+  /// Creates a Vietnamese currency formatter with dong symbol and
+  /// no decimal places.
   ///
+  /// Returns a [CurrencyTextInputFormatter] configured for Vietnamese dong (₫)
+  /// with custom pattern and no decimal digits.
   static CurrencyTextInputFormatter vn() {
     return CurrencyTextInputFormatter.currency(
-      locale: 'vi',
       symbol: '₫',
       decimalDigits: 0,
+      customPattern: '###,###₫',
     );
   }
 }
 
+/// A [TextInputFormatter] that formats numeric input with thousands separators.
 ///
+/// Strips all non-numeric characters and adds thousands separators.
+/// Does not allow decimal places.
 class NumberDigitsInputFormatter extends TextInputFormatter {
-  ///
+  /// Creates a new [NumberDigitsInputFormatter].
   NumberDigitsInputFormatter();
 
+  /// The number format used for formatting the input.
   ///
+  /// Uses a custom pattern with thousands separators and no decimal places.
   NumberFormat get format {
     return NumberFormat.currency(
-      locale: 'vi',
       symbol: '',
       decimalDigits: 0,
+      customPattern: '###,###',
     );
   }
 
@@ -43,19 +55,27 @@ class NumberDigitsInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final s = format.format(newValue.text);
+    final numericValue = newValue.text.replaceAll(RegExp('[^0-9]'), '');
+    final text = format.format(int.tryParse(numericValue) ?? 0);
     return TextEditingValue(
-      text: s,
-      selection: TextSelection.collapsed(offset: s.length),
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }
 
+/// A [TextInputFormatter] that formats phone numbers according
+/// to locale patterns.
 ///
+/// Supports US format: (XXX) XXX-XXXX
+/// and Vietnamese format: XXX XXX XXXX
 class PhoneInputFormatter extends TextInputFormatter {
+  /// Creates a new [PhoneInputFormatter] with optional locale.
   ///
+  /// If no locale is provided, US format will be used.
   PhoneInputFormatter([this.locale]);
 
+  /// Formats a phone number string according to Vietnamese pattern.
   static String _vnFormat(String text) {
     var s = text;
     s = s.replaceAll(' ', '');
@@ -78,6 +98,7 @@ class PhoneInputFormatter extends TextInputFormatter {
     return s;
   }
 
+  /// Formats a phone number string according to US pattern.
   static String _usFormat(String text) {
     var s = text;
     s = s.replaceAll(' ', '');
@@ -103,7 +124,9 @@ class PhoneInputFormatter extends TextInputFormatter {
     return s;
   }
 
+  /// Formats a phone number string according to the specified locale.
   ///
+  /// Uses Vietnamese format for 'vi' locale, US format otherwise.
   static String format(String text, [Locale? locale]) {
     switch (locale?.languageCode) {
       case 'vi':
@@ -112,7 +135,7 @@ class PhoneInputFormatter extends TextInputFormatter {
     return _usFormat(text);
   }
 
-  ///
+  /// The locale used to determine the formatting pattern.
   final Locale? locale;
 
   @override
@@ -128,7 +151,9 @@ class PhoneInputFormatter extends TextInputFormatter {
   }
 }
 
+/// A [TextInputFormatter] that formats hex color input.
 ///
+/// Ensures the input starts with '#' and converts to uppercase.
 class HexColorInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -146,7 +171,7 @@ class HexColorInputFormatter extends TextInputFormatter {
   }
 }
 
-///
+/// A [TextInputFormatter] that converts text input to uppercase.
 class UpperCaseInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -160,21 +185,27 @@ class UpperCaseInputFormatter extends TextInputFormatter {
   }
 }
 
+/// A [TextInputFormatter] that applies text capitalization rules.
 ///
+/// Supports capitalizing words, sentences, all characters, or none.
 class TextCapitalizationFormatter extends TextInputFormatter {
-  ///
-  const TextCapitalizationFormatter() : capitalization = TextCapitalization.none;
+  /// Creates a formatter with no capitalization.
+  const TextCapitalizationFormatter() //
+      : capitalization = TextCapitalization.none;
 
-  ///
-  const TextCapitalizationFormatter.words() : capitalization = TextCapitalization.words;
+  /// Creates a formatter that capitalizes the first letter of each word.
+  const TextCapitalizationFormatter.words() //
+      : capitalization = TextCapitalization.words;
 
-  ///
-  const TextCapitalizationFormatter.sentences() : capitalization = TextCapitalization.sentences;
+  /// Creates a formatter that capitalizes the first letter of each sentence.
+  const TextCapitalizationFormatter.sentences() //
+      : capitalization = TextCapitalization.sentences;
 
-  ///
-  const TextCapitalizationFormatter.characters() : capitalization = TextCapitalization.characters;
+  /// Creates a formatter that capitalizes all characters.
+  const TextCapitalizationFormatter.characters() //
+      : capitalization = TextCapitalization.characters;
 
-  ///
+  /// The capitalization rule to apply.
   final TextCapitalization capitalization;
 
   @override
@@ -208,7 +239,7 @@ class TextCapitalizationFormatter extends TextInputFormatter {
     );
   }
 
-  ///
+  /// Capitalizes the first non-space character in the given text.
   static String inCaps(String text) {
     if (text.isEmpty) {
       return text;

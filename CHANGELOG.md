@@ -1,3 +1,9 @@
+# 3.22.0
+* feat: CurrencyInputFormatter, PhoneInputFormatter, HexColorInputFormatter, TextCapitalizationFormatter, NumberInputFormatter
+* feat: MediaQuery, BuildContextExtensions, Config, JsonConverter, TextInputFormatter
+* feat: Color context extension
+* refactor: enhance documentation for color and responsive extensions
+
 # 3.19.1
 * fix: currency_text_input_formatter
 
