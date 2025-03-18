@@ -1,3 +1,6 @@
+# 3.27.0
+* chore: update dependencies and enhance configuration documentation
+
 # 3.22.0
 * feat: CurrencyInputFormatter, PhoneInputFormatter, HexColorInputFormatter, TextCapitalizationFormatter, NumberInputFormatter
 * feat: MediaQuery, BuildContextExtensions, Config, JsonConverter, TextInputFormatter
