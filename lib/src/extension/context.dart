@@ -16,7 +16,7 @@ extension BuildContextExtensions on BuildContext {
   Color get primaryColor => theme.primaryColor;
 
   /// Gets the background color from the current color scheme.
-  Color get backgroundColor => colorScheme.background;
+  Color get backgroundColor => colorScheme.surface;
 
   /// Gets the disabled color from the current theme.
   Color get disabledColor => theme.disabledColor;
@@ -43,30 +43,30 @@ extension BuildContextExtensions on BuildContext {
   ScaffoldMessengerState get scaffoldMessenger => ScaffoldMessenger.of(this);
 }
 
-/// Extension methods for MaterialState to provide easy access to common state
+/// Extension methods for WidgetState to provide easy access to common state
 /// checks.
-extension MaterialStateHelpers on Iterable<MaterialState> {
+extension WidgetStateHelpers on Iterable<WidgetState> {
   /// Whether the material widget is being hovered.
-  bool get isHovered => contains(MaterialState.hovered);
+  bool get isHovered => contains(WidgetState.hovered);
 
   /// Whether the material widget has input focus.
-  bool get isFocused => contains(MaterialState.focused);
+  bool get isFocused => contains(WidgetState.focused);
 
   /// Whether the material widget is being pressed.
-  bool get isPressed => contains(MaterialState.pressed);
+  bool get isPressed => contains(WidgetState.pressed);
 
   /// Whether the material widget is being dragged.
-  bool get isDragged => contains(MaterialState.dragged);
+  bool get isDragged => contains(WidgetState.dragged);
 
   /// Whether the material widget is in a selected state.
-  bool get isSelected => contains(MaterialState.selected);
+  bool get isSelected => contains(WidgetState.selected);
 
   /// Whether the material widget has content scrolled underneath it.
-  bool get isScrolledUnder => contains(MaterialState.scrolledUnder);
+  bool get isScrolledUnder => contains(WidgetState.scrolledUnder);
 
   /// Whether the material widget is in a disabled state.
-  bool get isDisabled => contains(MaterialState.disabled);
+  bool get isDisabled => contains(WidgetState.disabled);
 
   /// Whether the material widget is in an error state.
-  bool get isError => contains(MaterialState.error);
+  bool get isError => contains(WidgetState.error);
 }

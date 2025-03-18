@@ -3,9 +3,10 @@ import 'package:vuitv/vuitv.dart';
 
 const _kDefaultPrimaryColor = Color(0xFFe21d55);
 
-///Theme create by config
+/// The `ThemeConfig` class is responsible for managing
+/// the theme settings of the application.
 class ThemeConfig {
-  ///Theme create by config
+  /// Creates a new instance of `ThemeConfig` with default values.
   const ThemeConfig({
     this.primaryColor = _kDefaultPrimaryColor,
     this.secondaryColor,
@@ -15,34 +16,36 @@ class ThemeConfig {
     this.fontHeader = '',
   });
 
-  ///Theme fromJson
+  /// Creates a new instance of `ThemeConfig` from a JSON map.
   ThemeConfig.fromJson(Map<String, dynamic> json)
-      : primaryColor = HexColor.fromJson(json.getString('primaryColor')) ?? _kDefaultPrimaryColor,
+      : primaryColor = HexColor.fromJson(json.getString('primaryColor')) //
+            ??
+            _kDefaultPrimaryColor,
         secondaryColor = HexColor.fromJson(json.getString('secondaryColor')),
         backgroundColor = HexColor.fromJson(json.getString('backgroundColor')),
         textColor = HexColor.fromJson(json.getString('textColor')),
         fontFamily = json.getString('fontFamily') ?? '',
         fontHeader = json.getString('fontHeader') ?? '';
 
-  ///
+  /// The primary color of the theme.
   final Color primaryColor;
 
-  ///
+  /// The secondary color of the theme.
   final Color? secondaryColor;
 
-  ///
+  /// The background color of the theme.
   final Color? backgroundColor;
 
-  ///
+  /// The text color of the theme.
   final Color? textColor;
 
-  ///
+  /// The font family used in the theme.
   final String fontFamily;
 
-  ///
+  /// The font family used for headers in the theme.
   final String fontHeader;
 
-  ///
+  /// Converts the `ThemeConfig` instance to a JSON map.
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['primaryColor'] = primaryColor.toJson();

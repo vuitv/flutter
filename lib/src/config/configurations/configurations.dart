@@ -1,6 +1,6 @@
 part of '../config.dart';
 
-///
+/// A class that holds the application's configuration settings.
 class Configurations {
   static String _environment = DefaultConfig.environment;
   static String _baseUrl = DefaultConfig.baseUrl;
@@ -15,6 +15,7 @@ class Configurations {
   static Map<String, dynamic> _darkConfig = DefaultConfig.darkConfig;
   static Map<String, dynamic> _lightConfig = DefaultConfig.lightConfig;
 
+  /// Returns the current environment of the application.
   static void setConfig(Map<String, dynamic> json) {
     _environment = json.getString(ConfigKey.environment) ?? DefaultConfig.environment;
     _appConfig = json.getMap(ConfigKey.appConfig) ?? DefaultConfig.appConfig;

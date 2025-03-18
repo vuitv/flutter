@@ -1,5 +1,3 @@
-library vuitv;
-
 export 'package:intl/intl.dart';
 
 export 'src/config/config.dart';

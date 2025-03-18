@@ -218,20 +218,16 @@ class TextCapitalizationFormatter extends TextInputFormatter {
     switch (capitalization) {
       case TextCapitalization.words:
         text = newValue.text.split(' ').map(inCaps).join(' ');
-        break;
       case TextCapitalization.sentences:
         final sentences = newValue.text.split('.');
         for (var i = 0; i < sentences.length; i++) {
           sentences[i] = inCaps(sentences[i]);
         }
         text = sentences.join('.');
-        break;
       case TextCapitalization.characters:
         text = newValue.text.toUpperCase();
-        break;
       case TextCapitalization.none:
         text = newValue.text;
-        break;
     }
     return TextEditingValue(
       text: text,

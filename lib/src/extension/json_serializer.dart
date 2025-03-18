@@ -1,3 +1,4 @@
+//
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:vuitv/src/utils/logs.dart';
@@ -5,7 +6,7 @@ import 'package:vuitv/src/utils/logs.dart';
 /// Type definition for a function that creates an object of type T from a Map
 typedef MapFactoryFunction<T> = T Function(Map<String, dynamic>);
 
-/// Extension methods for Map<String, dynamic> to help with
+/// Extension methods for [Map<String, dynamic>] to help with
 /// JSON parsing and type conversion
 extension MapExt on Map<String, dynamic> {
   /// Gets a value of type T from the map for the given key
@@ -18,7 +19,7 @@ extension MapExt on Map<String, dynamic> {
     try {
       if (this == null) return null;
       return containsKey(key) && this[key] is T ? this[key] as T : null;
-    } catch (e) {
+    } on Exception catch (e) {
       printLog(e);
     }
     return null;

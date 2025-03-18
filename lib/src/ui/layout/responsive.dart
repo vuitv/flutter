@@ -37,10 +37,10 @@ class Responsive extends StatelessWidget {
   /// The [tablet] layout is optional. If not provided, the mobile layout will
   /// be used for tablet screens.
   const Responsive({
-    super.key,
     required this.mobile,
-    this.tablet,
     required this.desktop,
+    this.tablet,
+    super.key,
   });
 
   /// The widget to display on mobile screens (width < 600px)

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-///Custom log
+/// A utility function to print logs in debug mode.
 void printLog([dynamic data, DateTime? startTime]) {
   if (kDebugMode) {
     var time = '';
@@ -25,7 +25,7 @@ void printLog([dynamic data, DateTime? startTime]) {
       if (data.toString().contains('is not a subtype of type')) {
         throw Exception();
       }
-    } catch (e, trace) {
+    } on Exception catch (e, trace) {
       debugPrint('🔴 $data');
       debugPrint(trace.toString());
     }

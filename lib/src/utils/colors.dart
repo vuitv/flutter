@@ -29,7 +29,7 @@ class HexColor extends Color {
       if (sColor.isNotEmpty) {
         return Color(int.parse(sColor, radix: 16));
       }
-    } catch (e) {
+    } on Exception {
       return null;
     }
     return null;
