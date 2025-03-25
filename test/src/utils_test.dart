@@ -180,49 +180,36 @@ void main() {
   });
 
   group('PhoneInputFormatter', () {
+    CountryPhoneInputFormatter.setPhoneMask();
     test('formats US phone number correctly', () {
-      expect(
-        CountryPhoneInputFormatter().format('1234567890'),
-        equals('(123) 456-7890'),
+      CountryPhoneInputFormatter.setCountryCode('US');
+      final formater = CountryPhoneInputFormatter();
+      final formattedValue = formater.formatEditUpdate(
+        const TextEditingValue(text: '1234567890'),
+        const TextEditingValue(text: '1234567890'),
       );
-      expect(
-        CountryPhoneInputFormatter().format('123456'),
-        equals('(123) 456'),
-      );
-      expect(
-        CountryPhoneInputFormatter().format('123'),
-        equals('(123'),
-      );
+      expect(formattedValue.text, equals('(123) 456-7890'));
+      expect(formater.masked, equals('(123) 456-7890'));
+      expect(formater.unmasked, equals('1234567890'));
+      expect(formater.format('1234567890'), equals('(123) 456-7890'));
+      expect(formater.format('123456'), equals('(123) 456'));
+      expect(formater.format('123'), equals('(123'));
     });
 
     test('formats AU phone number with country code', () {
-      expect(
-        CountryPhoneInputFormatter().format('0123456789', 'AU'),
-        equals('0123 456 789'),
-      );
-      expect(
-        CountryPhoneInputFormatter().format('123456', 'AU'),
-        equals('1234 56'),
-      );
-      expect(
-        CountryPhoneInputFormatter().format('123', 'AU'),
-        equals('123'),
-      );
+      CountryPhoneInputFormatter.setCountryCode('AU');
+      final formater = CountryPhoneInputFormatter();
+      expect(formater.format('0123456789', 'AU'), equals('0123 456 789'));
+      expect(formater.format('123456', 'AU'), equals('1234 56'));
+      expect(formater.format('123', 'AU'), equals('123'));
     });
 
     test('formats VN phone number correctly', () {
-      expect(
-        CountryPhoneInputFormatter().format('1234567890', 'VN'),
-        equals('1234 567 890'),
-      );
-      expect(
-        CountryPhoneInputFormatter().format('123456', 'VN'),
-        equals('1234 56'),
-      );
-      expect(
-        CountryPhoneInputFormatter().format('123', 'VN'),
-        equals('123'),
-      );
+      CountryPhoneInputFormatter.setCountryCode('VN');
+      final formater = CountryPhoneInputFormatter();
+      expect(formater.format('1234567890', 'VN'), equals('1234 567 890'));
+      expect(formater.format('123456', 'VN'), equals('1234 56'));
+      expect(formater.format('123', 'VN'), equals('123'));
     });
   });
 

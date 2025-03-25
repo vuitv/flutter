@@ -1,3 +1,6 @@
+# 3.27.3
+* feat: refactor CountryPhoneInputFormatter to support dynamic country codes and improve phone number formatting
+* 
 # 3.27.2
 * chore: replace freezed_annotation with json_annotation
 

@@ -79,15 +79,29 @@ class NumberDigitsInputFormatter extends TextInputFormatter {
 /// Supports US format: (XXX) XXX-XXXX
 /// Australian format: XXXX XXX XXX
 /// and Vietnamese format: XXXX XXX XXX
-class CountryPhoneInputFormatter extends TextInputFormatter {
+class CountryPhoneInputFormatter extends PhoneInputFormatter {
   /// Creates a new [CountryPhoneInputFormatter] with optional locale.
   ///
   /// If no locale is provided, US format will be used.
-  factory CountryPhoneInputFormatter() {
-    return _auto;
+  factory CountryPhoneInputFormatter({
+    bool allowEndlessPhone = true,
+    String? defaultCountryCode,
+  }) {
+    return CountryPhoneInputFormatter._(
+      allowEndlessPhone: allowEndlessPhone,
+      defaultCountryCode: defaultCountryCode ?? _countryCode ?? _defaultCountryCode,
+    );
   }
 
-  CountryPhoneInputFormatter._() {
+  CountryPhoneInputFormatter._({
+    super.defaultCountryCode,
+    super.allowEndlessPhone,
+  });
+
+  static const String _defaultCountryCode = 'US';
+
+  /// Setup method to initialize phone masks for different countries.
+  static void setPhoneMask() {
     PhoneInputFormatter.replacePhoneMask(
       countryCode: 'US',
       newMask: '+0 (000) 000-0000',
@@ -102,10 +116,12 @@ class CountryPhoneInputFormatter extends TextInputFormatter {
     );
   }
 
-  static const String _defaultCountryCode = 'US';
+  /// Sets the country code for formatting.
+  static void setCountryCode(String countryCode) {
+    _countryCode = countryCode.toUpperCase();
+  }
 
-  /// Singleton instance of [CountryPhoneInputFormatter].
-  static final CountryPhoneInputFormatter _auto = CountryPhoneInputFormatter._();
+  static String? _countryCode;
 
   /// Formats a phone number string according to the specified locale.
   ///
@@ -119,24 +135,12 @@ class CountryPhoneInputFormatter extends TextInputFormatter {
         '';
   }
 
-  /// Sets the country code for formatting.
-  static void setCountryCode(String countryCode) {
-    _countryCode = countryCode.toUpperCase();
-  }
-
-  static String? _countryCode;
-
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final s = format(newValue.text);
-    return TextEditingValue(
-      text: s,
-      selection: TextSelection.collapsed(offset: s.length),
-    );
-  }
+  String get unmasked => toNumericString(
+        masked,
+        allowHyphen: false,
+        allowAllZeroes: true,
+      );
 }
 
 /// A [TextInputFormatter] that formats hex color input.
