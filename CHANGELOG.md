@@ -1,3 +1,6 @@
+# 3.27.2
+* chore: replace freezed_annotation with json_annotation
+
 # 3.27.1
 * feat: enhance currency formatting and add phone number formatter
 
