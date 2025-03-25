@@ -1,6 +1,6 @@
 name: vuitv
 description: A flutter project code base created by VuiTv ................
-version: 3.27.0
+version: 3.27.1
 
 homepage: https://github.com/vuitv/flutter
 repository: https://github.com/vuitv/flutter.git
@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_multi_formatter: ^2.13.7
   freezed_annotation: ^3.0.0
   intl: ^0.20.2
 

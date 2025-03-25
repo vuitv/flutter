@@ -1,3 +1,6 @@
+# 3.27.1
+* feat: enhance currency formatting and add phone number formatter
+
 # 3.27.0
 * chore: update dependencies and enhance configuration documentation
 

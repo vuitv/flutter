@@ -103,22 +103,47 @@ void main() {
   });
 
   group('CurrencyInputFormatter', () {
+    const oldValue = TextEditingValue.empty;
+
     test('us formats dollars with 2 decimal places', () {
       final formatter = CurrencyInputFormatter.us();
-      expect(formatter.format.format(1234.56), equals(r'$1,234.56'));
+      const newValue = TextEditingValue(text: '1234.56');
+      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+      expect(formattedValue.text, equals(r'$1,234.56'));
+    });
+
+    test('us formats dollars with 0 decimal places', () {
+      final formatter = CurrencyInputFormatter.us();
+      const newValue = TextEditingValue(text: '1234');
+      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+      expect(formattedValue.text, equals(r'$12.34'));
+    });
+
+    test('us formats dollars with 3 decimal places', () {
+      final formatter = CurrencyInputFormatter.us();
+      const newValue = TextEditingValue(text: '1234.567');
+      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+      expect(formattedValue.text, equals(r'$12,345.67'));
     });
 
     test('vn formats dong with 0 decimal places', () {
       final formatter = CurrencyInputFormatter.vn();
-      expect(formatter.format.format(1234), equals('1,234₫'));
-      expect(formatter.format.format(1234.56), equals('1,235₫'));
+      const newValue = TextEditingValue(text: '1234');
+      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+      expect(formattedValue.text, equals('1,234₫'));
+    });
+
+    test('vn formats dong with 2 decimal places', () {
+      final formatter = CurrencyInputFormatter.vn();
+      const newValue = TextEditingValue(text: '1234.56');
+      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+      expect(formattedValue.text, equals('123,456₫'));
     });
   });
 
   group('NumberDigitsInputFormatter', () {
-    final formatter = NumberDigitsInputFormatter();
-
     test('removes non-numeric characters', () {
+      final formatter = NumberDigitsInputFormatter();
       final result = formatter.formatEditUpdate(
         const TextEditingValue(text: 'abc123def'),
         const TextEditingValue(text: 'abc123def'),
@@ -127,6 +152,7 @@ void main() {
     });
 
     test('formats with thousand separators', () {
+      final formatter = NumberDigitsInputFormatter();
       final result = formatter.formatEditUpdate(
         const TextEditingValue(text: '1234567'),
         const TextEditingValue(text: '1234567'),
@@ -135,41 +161,66 @@ void main() {
     });
 
     test('formats with thousand separators and decimal places', () {
+      final formatter = NumberDigitsInputFormatter();
       final result = formatter.formatEditUpdate(
         const TextEditingValue(text: '1234567.89'),
         const TextEditingValue(text: '1234567.89'),
       );
       expect(result.text, equals('123,456,789'));
     });
+
+    test('handles empty string', () {
+      final formatter = NumberDigitsInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        TextEditingValue.empty,
+      );
+      expect(result.text, equals('0'));
+    });
   });
 
   group('PhoneInputFormatter', () {
     test('formats US phone number correctly', () {
       expect(
-        PhoneInputFormatter.format('1234567890'),
+        CountryPhoneInputFormatter().format('1234567890'),
         equals('(123) 456-7890'),
       );
       expect(
-        PhoneInputFormatter.format('123456'),
+        CountryPhoneInputFormatter().format('123456'),
         equals('(123) 456'),
       );
       expect(
-        PhoneInputFormatter.format('123'),
+        CountryPhoneInputFormatter().format('123'),
         equals('(123'),
+      );
+    });
+
+    test('formats AU phone number with country code', () {
+      expect(
+        CountryPhoneInputFormatter().format('0123456789', 'AU'),
+        equals('0123 456 789'),
+      );
+      expect(
+        CountryPhoneInputFormatter().format('123456', 'AU'),
+        equals('1234 56'),
+      );
+      expect(
+        CountryPhoneInputFormatter().format('123', 'AU'),
+        equals('123'),
       );
     });
 
     test('formats VN phone number correctly', () {
       expect(
-        PhoneInputFormatter.format('1234567890', const Locale('vi')),
-        equals('123 456 7890'),
+        CountryPhoneInputFormatter().format('1234567890', 'VN'),
+        equals('1234 567 890'),
       );
       expect(
-        PhoneInputFormatter.format('123456', const Locale('vi')),
-        equals('123 456'),
+        CountryPhoneInputFormatter().format('123456', 'VN'),
+        equals('1234 56'),
       );
       expect(
-        PhoneInputFormatter.format('123', const Locale('vi')),
+        CountryPhoneInputFormatter().format('123', 'VN'),
         equals('123'),
       );
     });

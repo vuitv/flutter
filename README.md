@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  vuitv: ^3.22.0
+  vuitv: ^3.27.1
 ```
 
 ## Features
@@ -52,14 +52,14 @@ final vnFormatter = CurrencyInputFormatter.vn();
 Phone Number Formatter
 ```dart
 // US format
-final usPhone = PhoneInputFormatter();
+final phoneNumber = CountryPhoneInputFormatter();
 // Input: 1234567890
 // Output: (123) 456-7890
 
 // Vietnamese format
-final vnPhone = PhoneInputFormatter(const Locale('vi'));
-// Input: 1234567890
-// Output: 123 456 7890
+final vnPhone = CountryPhoneInputFormatter();
+// Input: 0123456789
+// Output: 0123 456 789
 ```
 
 Hex Color Formatter

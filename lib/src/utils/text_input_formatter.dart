@@ -1,6 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
 
 /// A utility class for formatting currency input in different locales.
@@ -37,17 +37,26 @@ class CurrencyInputFormatter {
 /// Does not allow decimal places.
 class NumberDigitsInputFormatter extends TextInputFormatter {
   /// Creates a new [NumberDigitsInputFormatter].
-  NumberDigitsInputFormatter();
+  NumberDigitsInputFormatter({
+    this.decimalDigits = 0,
+  });
+
+  /// The number of decimal digits to allow in the input.
+  final int decimalDigits;
+
+  NumberFormat get _formater {
+    return NumberFormat.currency(
+      symbol: '',
+      decimalDigits: decimalDigits,
+      customPattern: '###,###',
+    );
+  }
 
   /// The number format used for formatting the input.
   ///
   /// Uses a custom pattern with thousands separators and no decimal places.
-  NumberFormat get format {
-    return NumberFormat.currency(
-      symbol: '',
-      decimalDigits: 0,
-      customPattern: '###,###',
-    );
+  String format(num value) {
+    return _formater.format(value);
   }
 
   @override
@@ -56,7 +65,7 @@ class NumberDigitsInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final numericValue = newValue.text.replaceAll(RegExp('[^0-9]'), '');
-    final text = format.format(int.tryParse(numericValue) ?? 0);
+    final text = _formater.format(int.tryParse(numericValue) ?? 0);
     return TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
@@ -64,86 +73,65 @@ class NumberDigitsInputFormatter extends TextInputFormatter {
   }
 }
 
-/// A [TextInputFormatter] that formats phone numbers according
+/// A [CountryPhoneInputFormatter] that formats phone numbers according
 /// to locale patterns.
 ///
 /// Supports US format: (XXX) XXX-XXXX
-/// and Vietnamese format: XXX XXX XXXX
-class PhoneInputFormatter extends TextInputFormatter {
-  /// Creates a new [PhoneInputFormatter] with optional locale.
+/// Australian format: XXXX XXX XXX
+/// and Vietnamese format: XXXX XXX XXX
+class CountryPhoneInputFormatter extends TextInputFormatter {
+  /// Creates a new [CountryPhoneInputFormatter] with optional locale.
   ///
   /// If no locale is provided, US format will be used.
-  PhoneInputFormatter([this.locale]);
-
-  /// Formats a phone number string according to Vietnamese pattern.
-  static String _vnFormat(String text) {
-    var s = text;
-    s = s.replaceAll(' ', '');
-    if (s.length <= 3) {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{1,3})'),
-        (m) => '${m[1]}',
-      );
-    } else if (s.length <= 6) {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{3})(\d{1,3})'),
-        (m) => '${m[1]} ${m[2]}',
-      );
-    } else {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{3})(\d{3})(\d{1,4})'),
-        (m) => '${m[1]} ${m[2]} ${m[3]}',
-      );
-    }
-    return s;
+  factory CountryPhoneInputFormatter() {
+    return _auto;
   }
 
-  /// Formats a phone number string according to US pattern.
-  static String _usFormat(String text) {
-    var s = text;
-    s = s.replaceAll(' ', '');
-    s = s.replaceAll('(', '');
-    s = s.replaceAll(')', '');
-    s = s.replaceAll('-', '');
-    if (s.length <= 3) {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{1,3})'),
-        (m) => '(${m[1]}',
-      );
-    } else if (s.length <= 6) {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{3})(\d{1,3})'),
-        (m) => '(${m[1]}) ${m[2]}',
-      );
-    } else {
-      s = s.replaceAllMapped(
-        RegExp(r'(\d{3})(\d{3})(\d{1,4})'),
-        (m) => '(${m[1]}) ${m[2]}-${m[3]}',
-      );
-    }
-    return s;
+  CountryPhoneInputFormatter._() {
+    PhoneInputFormatter.replacePhoneMask(
+      countryCode: 'US',
+      newMask: '+0 (000) 000-0000',
+    );
+    PhoneInputFormatter.replacePhoneMask(
+      countryCode: 'AU',
+      newMask: '+00 0000 000 000',
+    );
+    PhoneInputFormatter.replacePhoneMask(
+      countryCode: 'VN',
+      newMask: '+00 0000 000 000',
+    );
   }
+
+  static const String _defaultCountryCode = 'US';
+
+  /// Singleton instance of [CountryPhoneInputFormatter].
+  static final CountryPhoneInputFormatter _auto = CountryPhoneInputFormatter._();
 
   /// Formats a phone number string according to the specified locale.
   ///
   /// Uses Vietnamese format for 'vi' locale, US format otherwise.
-  static String format(String text, [Locale? locale]) {
-    switch (locale?.languageCode) {
-      case 'vi':
-        return _vnFormat(text);
-    }
-    return _usFormat(text);
+  String format(String text, [String? countryCode]) {
+    return formatAsPhoneNumber(
+          text,
+          allowEndlessPhone: true,
+          defaultCountryCode: countryCode ?? CountryPhoneInputFormatter._countryCode ?? _defaultCountryCode,
+        ) ??
+        '';
   }
 
-  /// The locale used to determine the formatting pattern.
-  final Locale? locale;
+  /// Sets the country code for formatting.
+  static void setCountryCode(String countryCode) {
+    _countryCode = countryCode.toUpperCase();
+  }
+
+  static String? _countryCode;
 
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final s = format(newValue.text, locale);
+    final s = format(newValue.text);
     return TextEditingValue(
       text: s,
       selection: TextSelection.collapsed(offset: s.length),

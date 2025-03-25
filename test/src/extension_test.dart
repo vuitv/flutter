@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vuitv/src/extension/colors.dart';
+import 'package:vuitv/src/extension/currency.dart';
 import 'package:vuitv/src/extension/json_serializer.dart';
 import 'package:vuitv/src/extension/string.dart';
 
@@ -25,6 +26,52 @@ void main() {
       const color = Color(0x80FF0000);
       expect(color.toJson(), equals('80ff0000'));
     });
+  });
+
+  group('currency', () {
+    test('formats number as US currency', () {
+      expect(1234.56.toCurrencyUS, equals(r'$1,234.56'));
+    });
+    test('formats number as US currency with no decimal', () {
+      expect(1234.toCurrencyUS, equals(r'$1,234.00'));
+    });
+    test('formats number as US currency with decimal', () {
+      expect(1234.5.toCurrencyUS, equals(r'$1,234.50'));
+    });
+    test('formats number as US currency with negative value', () {
+      expect((-1234.56).toCurrencyUS, equals(r'-$1,234.56'));
+    });
+    test('formats number as US currency with zero', () {
+      expect(0.toCurrencyUS, equals(r'$0.00'));
+    });
+
+    test('formats number as Vietnamese currency', () {
+      expect(1234.56.toCurrencyVN, equals('1,235₫'));
+    });
+    test('formats number as Vietnamese currency with no decimal', () {
+      expect(1234.toCurrencyVN, equals('1,234₫'));
+    });
+    test('formats number as Vietnamese currency with decimal', () {
+      expect(1234.5.toCurrencyVN, equals('1,235₫'));
+    });
+    test('formats number as Vietnamese currency with negative value', () {
+      expect((-1234.56).toCurrencyVN, equals('-1,235₫'));
+    });
+    test('formats number as Vietnamese currency with zero', () {
+      expect(0.toCurrencyVN, equals('0₫'));
+    });
+
+
+    test('formats number with thousands separators', () {
+      expect(1234567.89.toNumberFormat, equals('1,234,568'));
+    });
+    test('formats number with thousands separators and no decimal', () {
+      expect(1234567.toNumberFormat, equals('1,234,567'));
+    });
+    test('formats number with thousands separators and decimal', () {
+      expect(1234567.5.toNumberFormat, equals('1,234,568'));
+    });
+
   });
 
   group('jsonSerial', () {
@@ -189,6 +236,19 @@ void main() {
 
       test('url with user info returns true', () {
         expect('https://user:pass@example.com'.isUrl, isTrue);
+      });
+    });
+    group('toPhoneNumber()', () {
+      test('formats phone number with country code', () {
+        expect('1234567890'.toPhoneNumber('US'), equals('(123) 456-7890'));
+      });
+
+      test('formats phone number without country code', () {
+        expect('1234567890'.toPhoneNumber(), equals('(123) 456-7890'));
+      });
+
+      test('returns empty string for invalid input', () {
+        expect('invalid'.toPhoneNumber(), 'invalid');
       });
     });
   });
