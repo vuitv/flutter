@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:vuitv/src/core/country_codes.dart';
 import 'package:vuitv/src/utils/colors.dart';
 import 'package:vuitv/src/utils/json_converter.dart';
 import 'package:vuitv/src/utils/logs.dart';
@@ -8,32 +10,6 @@ import 'package:vuitv/src/utils/text_input_formatter.dart';
 
 void main() {
   group('HexColor', () {
-    group('constructor', () {
-      test('creates color from RGB hex with hash', () {
-        expect(HexColor('#FF0000'), equals(const Color(0xFFFF0000)));
-      });
-
-      test('creates color from RGB hex without hash', () {
-        expect(HexColor('FF0000'), equals(const Color(0xFFFF0000)));
-      });
-
-      test('creates color from ARGB hex with hash', () {
-        expect(HexColor('#80FF0000'), equals(const Color(0x80FF0000)));
-      });
-
-      test('creates color from ARGB hex without hash', () {
-        expect(HexColor('80FF0000'), equals(const Color(0x80FF0000)));
-      });
-
-      test('creates white color for invalid hex', () {
-        expect(HexColor('invalid'), equals(const Color(0xFFFFFFFF)));
-      });
-
-      test('creates white color for empty string', () {
-        expect(HexColor(''), equals(const Color(0xFFFFFFFF)));
-      });
-    });
-
     group('fromJson', () {
       test('creates color from RGB hex with hash', () {
         expect(HexColor.fromJson('#FF0000'), equals(const Color(0xFFFF0000)));
@@ -104,40 +80,90 @@ void main() {
 
   group('CurrencyInputFormatter', () {
     const oldValue = TextEditingValue.empty;
+    group('us formats', () {
+      test('currency formatter handles edge cases', () {
+        CountryCodes.current = 'US';
+        final formatter = CountryCurrencyInputFormatter();
 
-    test('us formats dollars with 2 decimal places', () {
-      final formatter = CurrencyInputFormatter.us();
-      const newValue = TextEditingValue(text: '1234.56');
-      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
-      expect(formattedValue.text, equals(r'$1,234.56'));
+        // Test with empty string
+        expect(
+          formatter
+              .formatEditUpdate(
+                TextEditingValue.empty,
+                TextEditingValue.empty,
+              )
+              .text,
+          isEmpty,
+        );
+
+        // Test with only digits
+        expect(
+          formatter
+              .formatEditUpdate(
+                TextEditingValue.empty,
+                const TextEditingValue(text: '1234'),
+              )
+              .text,
+          equals(r'$1,234.00'),
+        );
+
+        // Test with partial input
+        expect(
+          formatter
+              .formatEditUpdate(
+                const TextEditingValue(text: '12'),
+                const TextEditingValue(text: '123'),
+              )
+              .text,
+          equals(r'$123.00'),
+        );
+      });
+
+      test('formatter preserves appropriate selection', () {
+        CountryCodes.current = 'US';
+        final formatter = CountryCurrencyInputFormatter();
+
+        final result = formatter.formatEditUpdate(
+          const TextEditingValue(text: '123'),
+          const TextEditingValue(
+            text: '1234',
+            selection: TextSelection.collapsed(offset: 4),
+          ),
+        );
+
+        // Check both text and selection positioning
+        expect(result.text, equals(r'$1,234.00'));
+        expect(result.selection.baseOffset, isNot(equals(-1)));
+      });
+
+      test('formatter with mocked country code', () {
+        CountryCodes.current = 'US'; // Set known state
+        final formatter = CountryCurrencyInputFormatter();
+        final result = formatter.formatEditUpdate(
+          TextEditingValue.empty,
+          const TextEditingValue(text: '1234.56'),
+        );
+
+        expect(result.text, equals(r'$1,234.56'));
+      });
     });
 
-    test('us formats dollars with 0 decimal places', () {
-      final formatter = CurrencyInputFormatter.us();
-      const newValue = TextEditingValue(text: '1234');
-      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
-      expect(formattedValue.text, equals(r'$12.34'));
-    });
+    group('vn formats', () {
+      test('vn formats dong with 0 decimal places', () {
+        CountryCodes.current = 'VN';
+        final formatter = CountryCurrencyInputFormatter();
+        const newValue = TextEditingValue(text: '1234');
+        final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+        expect(formattedValue.text, equals('1,234₫'));
+      });
 
-    test('us formats dollars with 3 decimal places', () {
-      final formatter = CurrencyInputFormatter.us();
-      const newValue = TextEditingValue(text: '1234.567');
-      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
-      expect(formattedValue.text, equals(r'$12,345.67'));
-    });
-
-    test('vn formats dong with 0 decimal places', () {
-      final formatter = CurrencyInputFormatter.vn();
-      const newValue = TextEditingValue(text: '1234');
-      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
-      expect(formattedValue.text, equals('1,234₫'));
-    });
-
-    test('vn formats dong with 2 decimal places', () {
-      final formatter = CurrencyInputFormatter.vn();
-      const newValue = TextEditingValue(text: '1234.56');
-      final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
-      expect(formattedValue.text, equals('123,456₫'));
+      test('vn formats dong with 2 decimal places', () {
+        CountryCodes.current = 'VN';
+        final formatter = CountryCurrencyInputFormatter();
+        const newValue = TextEditingValue(text: '1234.56');
+        final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
+        expect(formattedValue.text, equals('123,456₫'));
+      });
     });
   });
 
@@ -182,7 +208,7 @@ void main() {
   group('PhoneInputFormatter', () {
     CountryPhoneInputFormatter.setPhoneMask();
     test('formats US phone number correctly', () {
-      CountryPhoneInputFormatter.setCountryCode('US');
+      CountryCodes.current = 'US';
       final formater = CountryPhoneInputFormatter();
       final formattedValue = formater.formatEditUpdate(
         const TextEditingValue(text: '1234567890'),
@@ -197,7 +223,7 @@ void main() {
     });
 
     test('formats AU phone number with country code', () {
-      CountryPhoneInputFormatter.setCountryCode('AU');
+      CountryCodes.current = 'AU';
       final formater = CountryPhoneInputFormatter();
       expect(formater.format('0123456789', 'AU'), equals('0123 456 789'));
       expect(formater.format('123456', 'AU'), equals('1234 56'));
@@ -205,7 +231,7 @@ void main() {
     });
 
     test('formats VN phone number correctly', () {
-      CountryPhoneInputFormatter.setCountryCode('VN');
+      CountryCodes.current = 'VN';
       final formater = CountryPhoneInputFormatter();
       expect(formater.format('1234567890', 'VN'), equals('1234 567 890'));
       expect(formater.format('123456', 'VN'), equals('1234 56'));

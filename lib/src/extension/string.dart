@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:vuitv/src/utils/text_input_formatter.dart';
 
 /// Extension methods for String to provide utility functions for URL and
@@ -42,5 +43,52 @@ extension StringExt on String {
       this,
       countryCode,
     );
+  }
+
+  /// Converts the string to a raw phone number format.
+  /// Strips all formatting characters from a phone number string.
+  ///
+  /// Removes spaces, parentheses, and hyphens to produce a raw numeric string.
+  ///
+  /// Example:
+  /// ```dart
+  /// '(123) 456-7890'.toRawPhoneNumber()  // Returns '1234567890'
+  /// '+1 (123) 456-7890'.toRawPhoneNumber()  // Returns '+11234567890'
+  /// ```
+  String toRawPhoneNumber() {
+    return replaceAll(RegExp('[ ()-]'), '');
+  }
+
+  /// Returns the first character of the string as an initial.
+  ///
+  /// This getter extracts the first character from a string, useful for
+  /// generating avatar placeholders, abbreviations, or initial-based identifiers.
+  ///
+  /// Returns an empty string if the original string is empty.
+  ///
+  /// Example:
+  /// ```dart
+  /// 'John Doe'.initials  // Returns 'J'
+  /// ''.initials          // Returns ''
+  /// ```
+  String get initials {
+    if (isEmpty) return '';
+
+    final firstChar = Characters(this).firstOrNull;
+    return firstChar ?? '';
+  }
+
+  /// Converts the first character of the string to uppercase.
+  ///
+  /// Uses the TextCapitalizationFormatter utility to capitalize the first letter
+  /// of the string while preserving the rest of the string.
+  ///
+  /// Example:
+  /// ```dart
+  /// 'hello world'.toFirstUpperCase()  // Returns 'Hello world'
+  /// 'dart'.toFirstUpperCase()         // Returns 'Dart'
+  /// ```
+  String toFirstUpperCase() {
+    return TextCapitalizationFormatter.inCaps(this);
   }
 }

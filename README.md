@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  vuitv: ^3.27.1
+  vuitv: ^3.27.4
 ```
 
 ## Features
@@ -41,11 +41,11 @@ dependencies:
 Currency Formatter
 ```dart
 // US currency formatter ($)
-final usFormatter = CurrencyInputFormatter.us();
+final usFormatter = CountryCurrencyInputFormatter();
 // Output: $1,234.56
 
 // Vietnamese currency formatter (₫)
-final vnFormatter = CurrencyInputFormatter.vn();
+final vnFormatter = CountryCurrencyInputFormatter();
 // Output: 1,234₫
 ```
 
@@ -84,7 +84,7 @@ final sentenceCaps = TextCapitalizationFormatter.sentences();
 
 ---
 
-[pub_badge]: https://img.shields.io/badge/pub-3.19.6-blue
+[pub_badge]: https://img.shields.io/badge/pub-3.27.4-blue
 [pub_link]: https://pub.dev/packages/vuitv
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

@@ -1,32 +1,81 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
+import 'package:vuitv/src/core/country_codes.dart';
 
 /// A utility class for formatting currency input in different locales.
-class CurrencyInputFormatter {
-  /// Creates a US currency formatter with dollar symbol and 2 decimal places.
+class CountryCurrencyInputFormatter extends TextInputFormatter {
+  /// Creates a new [CountryCurrencyInputFormatter] with optional country code.
   ///
-  /// Returns a [CurrencyTextInputFormatter] configured for US dollars ($)
-  /// with English locale and 2 decimal digits.
-  static CurrencyTextInputFormatter us() {
-    return CurrencyTextInputFormatter.currency(
-      locale: 'en',
-      symbol: r'$',
-      decimalDigits: 2,
-    );
+  /// If no country code is provided, the current locale will be used.
+  ///
+  CountryCurrencyInputFormatter({String? countryCode}) {
+    final locale = countryCode ?? CountryCodes.current;
+    switch (locale) {
+      case 'US':
+        _leadingSymbol = r'$';
+        _decimalDigits = 2;
+      case 'AU':
+        _leadingSymbol = r'$';
+        _decimalDigits = 2;
+      case 'VN':
+        _trailingSymbol = '₫';
+        _decimalDigits = 0;
+      default:
+        _decimalDigits = 2;
+    }
   }
 
-  /// Creates a Vietnamese currency formatter with dong symbol and
-  /// no decimal places.
-  ///
-  /// Returns a [CurrencyTextInputFormatter] configured for Vietnamese dong (₫)
-  /// with custom pattern and no decimal digits.
-  static CurrencyTextInputFormatter vn() {
-    return CurrencyTextInputFormatter.currency(
-      symbol: '₫',
-      decimalDigits: 0,
-      customPattern: '###,###₫',
+  String _leadingSymbol = '';
+  String _trailingSymbol = '';
+  int _decimalDigits = 2;
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+
+    // Remove all non-digit characters except decimal point
+    final value = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
+
+    if (value.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+
+    // Parse number and handle decimals based on locale
+    double number;
+    if (value.contains('.')) {
+      final parts = value.split('.');
+      if (_decimalDigits == 0) {
+        // For VN: treat decimals as part of integer
+        number = double.parse(parts[0] + parts[1]);
+      } else {
+        number = double.parse(value);
+      }
+    } else {
+      number = double.parse(value);
+    }
+
+    // Format with appropriate pattern
+    final formatter = NumberFormat.currency(
+      symbol: _leadingSymbol,
+      decimalDigits: _decimalDigits,
+    );
+
+    var formatted = formatter.format(number);
+
+    // Add trailing symbol if needed
+    if (_trailingSymbol.isNotEmpty) {
+      formatted = formatted.trim() + _trailingSymbol;
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
@@ -89,7 +138,7 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
   }) {
     return CountryPhoneInputFormatter._(
       allowEndlessPhone: allowEndlessPhone,
-      defaultCountryCode: defaultCountryCode ?? _countryCode ?? _defaultCountryCode,
+      defaultCountryCode: defaultCountryCode ?? CountryCodes.current,
     );
   }
 
@@ -97,8 +146,6 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
     super.defaultCountryCode,
     super.allowEndlessPhone,
   });
-
-  static const String _defaultCountryCode = 'US';
 
   /// Setup method to initialize phone masks for different countries.
   static void setPhoneMask() {
@@ -116,13 +163,6 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
     );
   }
 
-  /// Sets the country code for formatting.
-  static void setCountryCode(String countryCode) {
-    _countryCode = countryCode.toUpperCase();
-  }
-
-  static String? _countryCode;
-
   /// Formats a phone number string according to the specified locale.
   ///
   /// Uses Vietnamese format for 'vi' locale, US format otherwise.
@@ -130,7 +170,7 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
     return formatAsPhoneNumber(
           text,
           allowEndlessPhone: true,
-          defaultCountryCode: countryCode ?? CountryPhoneInputFormatter._countryCode ?? _defaultCountryCode,
+          defaultCountryCode: countryCode ?? CountryCodes.current,
         ) ??
         '';
   }

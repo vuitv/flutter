@@ -1,6 +1,7 @@
 export 'package:intl/intl.dart';
 
 export 'src/config/config.dart';
+export 'src/core/country_codes.dart';
 export 'src/extension/colors.dart';
 export 'src/extension/context.dart';
 export 'src/extension/currency.dart';
