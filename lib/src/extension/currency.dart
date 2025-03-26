@@ -1,8 +1,25 @@
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:vuitv/src/core/country_codes.dart';
 import 'package:vuitv/src/utils/text_input_formatter.dart';
 
 /// Extension methods on [num] to format numbers as currency strings.
 extension CurrencyNumExt on num {
+  /// Formats the number as a currency string based on the provided
+  /// country code.
+  ///
+  /// If no country code is provided, the current locale will be used.
+  ///
+  ///
+  /// Example:
+  /// ```dart
+  /// 1234.56.toCurrency(countryCode: 'VN') // Returns '1,234₫'
+  /// ```
+  String toCurrency({String? countryCode, int decimalDigits = 2}) {
+    final locale = (countryCode ?? CountryCodes.current).toUpperCase();
+    if (locale == 'VN') return toCurrencyVN();
+    return toCurrencyUS(decimalDigits: decimalDigits);
+  }
+
   /// Formats the number as a US currency string with '$'
   /// symbol and thousands separators.
   ///
@@ -10,8 +27,9 @@ extension CurrencyNumExt on num {
   /// ```dart
   /// 1234.56.toCurrencyUS // Returns '$1,234.56'
   /// ```
-  String get toCurrencyUS => toCurrencyString(
-        NumberDigitsInputFormatter(decimalDigits: 2).format(this),
+  String toCurrencyUS({int decimalDigits = 2}) => toCurrencyString(
+        toNumberFormat(decimalDigits: decimalDigits),
+        mantissaLength: decimalDigits,
         leadingSymbol: r'$',
       );
 
@@ -22,8 +40,8 @@ extension CurrencyNumExt on num {
   /// ```dart
   /// 1234.toCurrencyVN // Returns '1,234đ'
   /// ```
-  String get toCurrencyVN => toCurrencyString(
-        toNumberFormat,
+  String toCurrencyVN() => toCurrencyString(
+        toNumberFormat(),
         mantissaLength: 0,
         trailingSymbol: '₫',
       );
@@ -34,5 +52,7 @@ extension CurrencyNumExt on num {
   /// ```dart
   /// abc1234.56.toNumberFormat // Returns '123,456'
   /// ```
-  String get toNumberFormat => NumberDigitsInputFormatter().format(this);
+  String toNumberFormat({int decimalDigits = 0}) => NumberDigitsInputFormatter(
+        decimalDigits: decimalDigits,
+      ).format(this);
 }

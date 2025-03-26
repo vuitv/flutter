@@ -1,3 +1,6 @@
+# 3.27.5
+* feat: enhance currency formatting and add comprehensive input formatters
+
 # 3.27.4
 * feat: refactor CountryPhoneInputFormatter to support dynamic country codes and improve phone number formatting
 

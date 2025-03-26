@@ -1,83 +1,35 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:vuitv/src/core/country_codes.dart';
 
 /// A utility class for formatting currency input in different locales.
-class CountryCurrencyInputFormatter extends TextInputFormatter {
+abstract class CountryCurrencyInputFormatter {
+  CountryCurrencyInputFormatter._();
+
   /// Creates a new [CountryCurrencyInputFormatter] with optional country code.
   ///
   /// If no country code is provided, the current locale will be used.
   ///
-  CountryCurrencyInputFormatter({String? countryCode}) {
-    final locale = countryCode ?? CountryCodes.current;
-    switch (locale) {
-      case 'US':
-        _leadingSymbol = r'$';
-        _decimalDigits = 2;
-      case 'AU':
-        _leadingSymbol = r'$';
-        _decimalDigits = 2;
-      case 'VN':
-        _trailingSymbol = '₫';
-        _decimalDigits = 0;
-      default:
-        _decimalDigits = 2;
-    }
+  static CurrencyTextInputFormatter auto({String? countryCode}) {
+    final locale = (countryCode ?? CountryCodes.current).toUpperCase();
+    return locale == 'VN' ? vn() : us();
   }
 
-  String _leadingSymbol = '';
-  String _trailingSymbol = '';
-  int _decimalDigits = 2;
+  /// Creates a new [CountryCurrencyInputFormatter] with the specified locale.
+  static CurrencyTextInputFormatter us() => CurrencyTextInputFormatter.currency(
+        locale: 'en',
+        symbol: r'$',
+        decimalDigits: 2,
+      );
 
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    // Remove all non-digit characters except decimal point
-    final value = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
-
-    if (value.isEmpty) {
-      return newValue.copyWith(text: '');
-    }
-
-    // Parse number and handle decimals based on locale
-    double number;
-    if (value.contains('.')) {
-      final parts = value.split('.');
-      if (_decimalDigits == 0) {
-        // For VN: treat decimals as part of integer
-        number = double.parse(parts[0] + parts[1]);
-      } else {
-        number = double.parse(value);
-      }
-    } else {
-      number = double.parse(value);
-    }
-
-    // Format with appropriate pattern
-    final formatter = NumberFormat.currency(
-      symbol: _leadingSymbol,
-      decimalDigits: _decimalDigits,
-    );
-
-    var formatted = formatter.format(number);
-
-    // Add trailing symbol if needed
-    if (_trailingSymbol.isNotEmpty) {
-      formatted = formatted.trim() + _trailingSymbol;
-    }
-
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
+  /// Creates a new [CountryCurrencyInputFormatter] with the specified locale.
+  static CurrencyTextInputFormatter vn() => CurrencyTextInputFormatter.currency(
+        symbol: '₫',
+        decimalDigits: 0,
+        customPattern: '###,###₫',
+      );
 }
 
 /// A [TextInputFormatter] that formats numeric input with thousands separators.
@@ -276,6 +228,72 @@ class TextCapitalizationFormatter extends TextInputFormatter {
     for (var i = 0; i < text.length; i++) {
       if (text[i] != ' ') {
         result += '${text[i].toUpperCase()}${text.substring(i + 1)}';
+        break;
+      } else {
+        result += text[i];
+      }
+    }
+    return result;
+  }
+}
+
+/// A [TextInputFormatter] that capitalizes the first letter of each word.
+///
+/// This formatter is useful for ensuring that user input is properly capitalized
+/// when entering names, titles, or other text where capitalization is important.
+///
+/// It splits the input text into words and capitalizes the first letter of each word,
+/// while keeping the rest of the letters in lowercase.
+///
+/// Example:
+/// ```dart
+/// final formatter = WordsTextInputFormatter();
+/// final formattedText = formatter.formatEditUpdate(
+///  oldValue: TextEditingValue(text: 'hello world'),
+///  newValue: TextEditingValue(text: 'hello world'),
+/// );
+/// print(formattedText.text); // Output: 'Hello World'
+/// ```
+/// This formatter can be used in a [TextField] or [TextFormField] to ensure that
+/// the user input is properly capitalized.
+/// Example:
+/// ```dart
+///  final TextField(
+///   inputFormatters: [WordsTextInputFormatter()],
+///   onChanged: (value) {
+///    print(value); // Output: 'Hello World'
+///   },
+///  );
+
+class WordsTextInputFormatter extends TextInputFormatter {
+  /// Creates a new [WordsTextInputFormatter].
+  const WordsTextInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final sentences = newValue.text.split(' ');
+    for (var i = 0; i < sentences.length; i++) {
+      sentences[i] = inCaps(sentences[i]);
+    }
+
+    return TextEditingValue(
+      text: sentences.join(' '),
+      selection: newValue.selection,
+    );
+  }
+
+  /// Capitalizes the first non-space character in the given text.
+  String inCaps(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    var result = '';
+    for (var i = 0; i < text.length; i++) {
+      if (text[i] != ' ') {
+        result += '${text[i].toUpperCase()}${text.substring(i + 1).toLowerCase()}';
         break;
       } else {
         result += text[i];

@@ -83,7 +83,7 @@ void main() {
     group('us formats', () {
       test('currency formatter handles edge cases', () {
         CountryCodes.current = 'US';
-        final formatter = CountryCurrencyInputFormatter();
+        final formatter = CountryCurrencyInputFormatter.auto();
 
         // Test with empty string
         expect(
@@ -104,7 +104,7 @@ void main() {
                 const TextEditingValue(text: '1234'),
               )
               .text,
-          equals(r'$1,234.00'),
+          equals(r'$12.34'),
         );
 
         // Test with partial input
@@ -115,13 +115,13 @@ void main() {
                 const TextEditingValue(text: '123'),
               )
               .text,
-          equals(r'$123.00'),
+          equals(r'$1.23'),
         );
       });
 
       test('formatter preserves appropriate selection', () {
         CountryCodes.current = 'US';
-        final formatter = CountryCurrencyInputFormatter();
+        final formatter = CountryCurrencyInputFormatter.auto();
 
         final result = formatter.formatEditUpdate(
           const TextEditingValue(text: '123'),
@@ -132,13 +132,13 @@ void main() {
         );
 
         // Check both text and selection positioning
-        expect(result.text, equals(r'$1,234.00'));
+        expect(result.text, equals(r'$12.34'));
         expect(result.selection.baseOffset, isNot(equals(-1)));
       });
 
       test('formatter with mocked country code', () {
         CountryCodes.current = 'US'; // Set known state
-        final formatter = CountryCurrencyInputFormatter();
+        final formatter = CountryCurrencyInputFormatter.auto();
         final result = formatter.formatEditUpdate(
           TextEditingValue.empty,
           const TextEditingValue(text: '1234.56'),
@@ -151,7 +151,7 @@ void main() {
     group('vn formats', () {
       test('vn formats dong with 0 decimal places', () {
         CountryCodes.current = 'VN';
-        final formatter = CountryCurrencyInputFormatter();
+        final formatter = CountryCurrencyInputFormatter.auto();
         const newValue = TextEditingValue(text: '1234');
         final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
         expect(formattedValue.text, equals('1,234₫'));
@@ -159,7 +159,7 @@ void main() {
 
       test('vn formats dong with 2 decimal places', () {
         CountryCodes.current = 'VN';
-        final formatter = CountryCurrencyInputFormatter();
+        final formatter = CountryCurrencyInputFormatter.auto();
         const newValue = TextEditingValue(text: '1234.56');
         final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
         expect(formattedValue.text, equals('123,456₫'));
