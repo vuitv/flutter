@@ -87,16 +87,19 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
   factory CountryPhoneInputFormatter({
     bool allowEndlessPhone = true,
     String? defaultCountryCode,
+    bool shouldCorrectNumber = false,
   }) {
     return CountryPhoneInputFormatter._(
       allowEndlessPhone: allowEndlessPhone,
       defaultCountryCode: defaultCountryCode ?? CountryCodes.current,
+      shouldCorrectNumber: shouldCorrectNumber,
     );
   }
 
   CountryPhoneInputFormatter._({
     super.defaultCountryCode,
     super.allowEndlessPhone,
+    super.shouldCorrectNumber,
   });
 
   /// Setup method to initialize phone masks for different countries.

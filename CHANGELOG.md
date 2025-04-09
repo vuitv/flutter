@@ -1,4 +1,7 @@
-# 3.27.5
+# 3.27.6
+* fix: formater phone AU add support for number correction in CountryPhoneInputFormatter
+
+* # 3.27.5
 * feat: enhance currency formatting and add comprehensive input formatters
 
 # 3.27.4
