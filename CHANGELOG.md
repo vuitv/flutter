@@ -1,3 +1,6 @@
+# 3.27.7
+* feat: enhance currency formatting to support trailing zeros and improve test coverage
+* 
 # 3.27.6
 * fix: formater phone AU add support for number correction in CountryPhoneInputFormatter
 

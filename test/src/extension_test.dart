@@ -29,49 +29,92 @@ void main() {
   });
 
   group('currency', () {
-    test('formats number as US currency', () {
-      expect(1234.56.toCurrencyUS, equals(r'$1,234.56'));
-    });
-    test('formats number as US currency with no decimal', () {
-      expect(1234.toCurrencyUS, equals(r'$1,234.00'));
-    });
-    test('formats number as US currency with decimal', () {
-      expect(1234.5.toCurrencyUS, equals(r'$1,234.50'));
-    });
-    test('formats number as US currency with negative value', () {
-      expect((-1234.56).toCurrencyUS, equals(r'-$1,234.56'));
-    });
-    test('formats number as US currency with zero', () {
-      expect(0.toCurrencyUS, equals(r'$0.00'));
+    group('toCurrencyUS', () {
+      test('formats whole number with added zeros', () {
+        expect(1234.toCurrencyUS(), equals(r'$1,234.00'));
+      });
+
+      test('formats with one decimal place', () {
+        expect(1234.5.toCurrencyUS(), equals(r'$1,234.50'));
+      });
+
+      test('formats with two decimal places explicitly', () {
+        expect(1234.50.toCurrencyUS(), equals(r'$1,234.50'));
+      });
+
+      test('handles negative values', () {
+        expect((-1234.56).toCurrencyUS(), equals(r'-$1,234.56'));
+      });
+
+      test('handles zero value', () {
+        expect(0.toCurrencyUS(), equals(r'$0.00'));
+      });
+
+      test('handles rounding of more than two decimals', () {
+        expect(12.345.toCurrencyUS(), equals(r'$12.35'));
+      });
+
+      group('with trailingZero: false', () {
+        test('removes trailing zeros from whole numbers', () {
+          expect(12.toCurrencyUS(trailingZero: false), equals(r'$12'));
+          expect(1234.toCurrencyUS(trailingZero: false), equals(r'$1,234'));
+          expect(123.00.toCurrencyUS(trailingZero: false), equals(r'$123'));
+          expect(1234.00.toCurrencyUS(trailingZero: false), equals(r'$1,234'));
+        });
+
+        test('preserves significant decimals', () {
+          expect(12.34.toCurrencyUS(trailingZero: false), equals(r'$12.34'));
+          expect(123.4.toCurrencyUS(trailingZero: false), equals(r'$123.4'));
+          expect(1234.50.toCurrencyUS(trailingZero: false), equals(r'$1,234.5'));
+          expect(1234.56.toCurrencyUS(trailingZero: false), equals(r'$1,234.56'));
+          expect(1234.560.toCurrencyUS(trailingZero: false), equals(r'$1,234.56'));
+        });
+
+        test('rounds tiny decimals correctly', () {
+          expect(1234.0001.toCurrencyUS(trailingZero: false), equals(r'$1,234'));
+        });
+
+        test('handles negative values', () {
+          expect((-1234.56).toCurrencyUS(trailingZero: false), equals(r'-$1,234.56'));
+        });
+      });
     });
 
-    test('formats number as Vietnamese currency', () {
-      expect(1234.56.toCurrencyVN, equals('1,235₫'));
-    });
-    test('formats number as Vietnamese currency with no decimal', () {
-      expect(1234.toCurrencyVN, equals('1,234₫'));
-    });
-    test('formats number as Vietnamese currency with decimal', () {
-      expect(1234.5.toCurrencyVN, equals('1,235₫'));
-    });
-    test('formats number as Vietnamese currency with negative value', () {
-      expect((-1234.56).toCurrencyVN, equals('-1,235₫'));
-    });
-    test('formats number as Vietnamese currency with zero', () {
-      expect(0.toCurrencyVN, equals('0₫'));
+    group('toCurrencyVN', () {
+      test('formats with rounding', () {
+        expect(1234.56.toCurrencyVN(), equals('1,235₫'));
+      });
+
+      test('formats whole number', () {
+        expect(1234.toCurrencyVN(), equals('1,234₫'));
+      });
+
+      test('formats with decimal rounding', () {
+        expect(1234.5.toCurrencyVN(), equals('1,235₫'));
+      });
+
+      test('handles negative values', () {
+        expect((-1234.56).toCurrencyVN(), equals('-1,235₫'));
+      });
+
+      test('handles zero value', () {
+        expect(0.toCurrencyVN(), equals('0₫'));
+      });
     });
 
+    group('toNumberFormat', () {
+      test('formats with thousands separators and rounding', () {
+        expect(1234567.89.toNumberFormat(), equals('1,234,568'));
+      });
 
-    test('formats number with thousands separators', () {
-      expect(1234567.89.toNumberFormat, equals('1,234,568'));
-    });
-    test('formats number with thousands separators and no decimal', () {
-      expect(1234567.toNumberFormat, equals('1,234,567'));
-    });
-    test('formats number with thousands separators and decimal', () {
-      expect(1234567.5.toNumberFormat, equals('1,234,568'));
-    });
+      test('formats whole numbers with separators', () {
+        expect(1234567.toNumberFormat(), equals('1,234,567'));
+      });
 
+      test('rounds single decimal places', () {
+        expect(1234567.5.toNumberFormat(), equals('1,234,568'));
+      });
+    });
   });
 
   group('jsonSerial', () {
@@ -240,11 +283,11 @@ void main() {
     });
     group('toPhoneNumber()', () {
       test('formats phone number with country code', () {
-        expect('1234567890'.toPhoneNumber('US'), equals('(123) 456-7890'));
+        expect('1234567890'.toPhoneNumber('US'), equals('(123) 456 7890'));
       });
 
       test('formats phone number without country code', () {
-        expect('1234567890'.toPhoneNumber(), equals('(123) 456-7890'));
+        expect('1234567890'.toPhoneNumber(), equals('(123) 456 7890'));
       });
 
       test('returns empty string for invalid input', () {
