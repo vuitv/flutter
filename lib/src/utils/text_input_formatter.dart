@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
@@ -267,7 +270,6 @@ class TextCapitalizationFormatter extends TextInputFormatter {
 ///    print(value); // Output: 'Hello World'
 ///   },
 ///  );
-
 class WordsTextInputFormatter extends TextInputFormatter {
   /// Creates a new [WordsTextInputFormatter].
   const WordsTextInputFormatter();
@@ -277,9 +279,36 @@ class WordsTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final sentences = newValue.text.split(' ');
+    // First handle words in parentheses
+    var text = newValue.text;
+
+    // Find all parentheses content and capitalize words inside them
+    final parenRegex = RegExp(r'\(([^)]+)\)');
+    text = text.replaceAllMapped(parenRegex, (match) {
+      final inside = match.group(1)!;
+      // Apply word capitalization to each word inside parentheses
+      final parts = inside.split(' ');
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].isNotEmpty) {
+          parts[i] = '${parts[i][0].toUpperCase()}${parts[i].substring(1)}';
+        }
+      }
+      return '(${parts.join(' ')})';
+    });
+
+    // Then handle the rest with regular splitting
+    final sentences = text.split(' ');
     for (var i = 0; i < sentences.length; i++) {
-      sentences[i] = inCaps(sentences[i]);
+      if (sentences[i].contains('&')) {
+        // Special handling for ampersand
+        final parts = sentences[i].split('&');
+        for (var j = 0; j < parts.length; j++) {
+          parts[j] = inCaps(parts[j]);
+        }
+        sentences[i] = parts.join('&');
+      } else {
+        sentences[i] = inCaps(sentences[i]);
+      }
     }
 
     return TextEditingValue(
@@ -293,15 +322,119 @@ class WordsTextInputFormatter extends TextInputFormatter {
     if (text.isEmpty) {
       return text;
     }
-    var result = '';
+    var leadingSpaces = '';
+    // Find the first letter (not space, not emoji, not special character)
     for (var i = 0; i < text.length; i++) {
-      if (text[i] != ' ') {
-        result += '${text[i].toUpperCase()}${text.substring(i + 1).toLowerCase()}';
-        break;
+      final char = text[i];
+      if (char == ' ') {
+        // Keep spaces as is
+        leadingSpaces += char;
+        continue;
+      }
+
+      // Check if this character has distinct uppercase and lowercase forms
+      if (char.toUpperCase() != char.toLowerCase()) {
+        // It's a letter - capitalize it and lowercase the rest
+        return leadingSpaces + char.toUpperCase() + text.substring(i + 1).toLowerCase();
       } else {
-        result += text[i];
+        // It's a non-letter character (number, emoji, etc)
+        leadingSpaces += char;
       }
     }
-    return result;
+
+    // If no capitalizable letters found, return original text
+    return text;
+  }
+}
+
+/// A specialized text formatter that implements string trimming functionalities.
+/// This formatter automatically removes leading and trailing whitespace as the user types.
+/// It also adjusts the cursor position accordingly.
+///
+/// This formatter is useful for ensuring that user input is clean and free of unnecessary spaces.
+/// For example, it can be used in a [TextField] or [TextFormField] to ensure that
+/// the user input is properly trimmed.
+/// Example:
+/// ```dart
+/// final TextField(
+///  inputFormatters: [StringTrimmingFormatter()],
+///  onChanged: (value) {
+///   print(value); // Output: 'Hello World'
+///  },
+/// );
+class StringTrimmingFormatter extends TextInputFormatter {
+  /// Creates a new [StringTrimmingFormatter].
+  const StringTrimmingFormatter({this.trimBetween = false});
+
+  /// Whether to trim spaces between words.
+  final bool trimBetween;
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    // Skip trimming if text is being deleted
+    if (oldValue.text.length > newValue.text.length) {
+      return newValue;
+    }
+
+    final originalText = newValue.text;
+
+    // First trim leading and trailing whitespace
+    var trimmed = originalText.trim();
+
+    // If trimBetween is enabled, replace multiple spaces with single space
+    if (trimBetween) {
+      trimmed = trimmed.replaceAll(RegExp(r'\s+'), ' ');
+    }
+
+    // If nothing changed after trimming, return original value
+    if (trimmed == originalText) {
+      return newValue;
+    }
+
+    // Calculate new cursor position more accurately
+    // Safely handle null or invalid selection
+    final selectionIndex = newValue.selection.isValid && newValue.selection.end >= 0
+        ? min(newValue.selection.end, originalText.length)
+        : originalText.length;
+    final textBeforeCursor = originalText.substring(0, selectionIndex);
+
+    // Apply same trimming logic to text before cursor
+    var trimmedBeforeCursor = textBeforeCursor.trimLeft();
+    final leadingSpacesRemoved = textBeforeCursor.length - trimmedBeforeCursor.length;
+
+    if (trimBetween) {
+      trimmedBeforeCursor = trimmedBeforeCursor.replaceAll(RegExp(r'\s+'), ' ');
+    }
+
+    // If cursor was in trailing space, place it at the end of trimmed text
+    if (selectionIndex >= originalText.trimRight().length) {
+      return TextEditingValue(
+        text: trimmed,
+        selection: TextSelection.collapsed(offset: trimmed.length),
+      );
+    }
+
+    // Calculate new cursor position
+    var newCursorPosition = selectionIndex - leadingSpacesRemoved;
+
+    // Additional adjustment for multiple spaces between words
+    if (trimBetween) {
+      final pattern = RegExp(r'\s+');
+      final matches = pattern.allMatches(textBeforeCursor).toList();
+      for (final match in matches) {
+        if (match.start < selectionIndex) {
+          // Only count extra spaces (beyond 1) that were removed
+          newCursorPosition -= max(0, match.end - match.start - 1);
+        }
+      }
+    }
+
+    // Ensure cursor position is valid
+    newCursorPosition = max(0, min(trimmed.length, newCursorPosition));
+
+    return TextEditingValue(
+      text: trimmed,
+      selection: TextSelection.collapsed(offset: newCursorPosition),
+    );
   }
 }

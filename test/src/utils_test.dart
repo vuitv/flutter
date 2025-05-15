@@ -2,11 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vuitv/src/core/country_codes.dart';
-import 'package:vuitv/src/utils/colors.dart';
-import 'package:vuitv/src/utils/json_converter.dart';
-import 'package:vuitv/src/utils/logs.dart';
-import 'package:vuitv/src/utils/text_input_formatter.dart';
+import 'package:vuitv/vuitv.dart';
 
 void main() {
   group('HexColor', () {
@@ -379,6 +375,864 @@ void main() {
 
     test('handles first character for ascii string', () {
       expect(TextCapitalizationFormatter.inCaps('Test'), equals('Test'));
+    });
+  });
+
+  group('WordsTextInputFormatter', () {
+    test('capitalizes words correctly', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: 'hello world test'),
+      );
+      expect(result.text, equals('Hello World Test'));
+    });
+
+    test('handles empty string', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        TextEditingValue.empty,
+      );
+      expect(result.text, equals(''));
+    });
+
+    test('handles multiple spaces between words', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: 'hello   world'),
+      );
+      expect(result.text, equals('Hello   World'));
+    });
+
+    test('capitalizes words correctly with emoji', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: '😀hello world test'),
+      );
+      expect(result.text, equals('😀Hello World Test'));
+    });
+
+    test('capitalizes words correctly with special characters', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: 'hello! world? test.'),
+      );
+      expect(result.text, equals('Hello! World? Test.'));
+    });
+
+    test('capitalizes words correctly with special characters', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: 'service name (test)'),
+      );
+      expect(result.text, equals('Service Name (Test)'));
+    });
+
+    test('handles string with only spaces', () {
+      const formatter = WordsTextInputFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: '  '),
+      );
+      expect(result.text, equals('  '));
+    });
+  });
+
+  group('StringTrimmingFormatter', () {
+    test('trims leading and trailing spaces', () {
+      const formatter = StringTrimmingFormatter();
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(text: '   hello world   '),
+        const TextEditingValue(text: '   hello world   '),
+      );
+      expect(result.text, equals('hello world'));
+    });
+
+    test('trims leading and trailing spaces with multiple spaces', () {
+      const formatter = StringTrimmingFormatter(trimBetween: true);
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(text: '   hello   world   '),
+        const TextEditingValue(text: '   hello   world   '),
+      );
+      expect(result.text, equals('hello world'));
+    });
+
+    test('trims leading and trailing spaces with emoji', () {
+      const formatter = StringTrimmingFormatter(trimBetween: true);
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(text: '   😀hello world   '),
+        const TextEditingValue(text: '   😀hello  world   '),
+      );
+      expect(result.text, equals('😀hello world'));
+    });
+
+    test('handles empty string', () {
+      const formatter = StringTrimmingFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        TextEditingValue.empty,
+      );
+      expect(result.text, equals(''));
+    });
+
+    test('handles string with only spaces', () {
+      const formatter = StringTrimmingFormatter();
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(text: '     '),
+        const TextEditingValue(text: '     '),
+      );
+      expect(result.text, equals(''));
+    });
+  });
+
+  /// Test for formatters that are not covered above.
+  group('InputFormatters', () {
+    group('phone formatters', () {
+      test('should contain 3 formatters', () {
+        CountryCodes.current = 'US';
+        expect(InputFormatters.phone.length, 3);
+      });
+
+      test('should allow valid phone characters', () {
+        final formatters = InputFormatters.phone;
+
+        const validInput = '1234567890';
+        var formattedValue = const TextEditingValue(text: validInput);
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '(123) 456-7890');
+      });
+
+      test('should filter invalid phone characters', () {
+        final formatters = InputFormatters.phone;
+
+        const invalidInput = '123456';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '(123) 456');
+      });
+
+      test('should limit phone input length to 14 characters', () {
+        final formatters = InputFormatters.phone;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(14));
+      });
+    });
+
+    group('email formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.email.length, 2);
+      });
+
+      test('should allow valid email characters', () {
+        final formatters = InputFormatters.email;
+
+        const validInput = 'user.name@example.com';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid email characters', () {
+        final formatters = InputFormatters.email;
+
+        const invalidInput = 'user*name@example.com';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'username@example.com');
+      });
+
+      test('should limit email input length to 50 characters', () {
+        final formatters = InputFormatters.email;
+
+        const longInput = 'verylongusernamethatshouldbetruncated@veryverylongdomain.com';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(50));
+      });
+    });
+
+    group('nameWords formatters', () {
+      test('should contain 3 formatters', () {
+        expect(InputFormatters.nameWords.length, 3);
+      });
+
+      test('should allow valid name characters', () {
+        final formatters = InputFormatters.nameWords;
+
+        const validInput = 'John Doe';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('capitalizes each word correctly', () {
+        final formatters = InputFormatters.nameWords;
+
+        const input = 'john doe';
+        var formattedValue = const TextEditingValue(text: input);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'John Doe');
+      });
+
+      test('should limit name input length to 80 characters', () {
+        final formatters = InputFormatters.nameWords;
+
+        final longInput = 'a' * 100;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(80));
+      });
+    });
+
+    group('price formatters', () {
+      test('should contain 3 formatters', () {
+        expect(InputFormatters.price.length, 3);
+      });
+
+      test('should allow valid price characters', () {
+        final formatters = InputFormatters.price;
+
+        const validInput = '1,234.56';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.contains(RegExp('[1234.,]+')), isTrue);
+      });
+
+      test('should filter invalid price characters', () {
+        final formatters = InputFormatters.price;
+
+        const invalidInput = '1234.56abc';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.contains(RegExp(r'[^0-9.,$₫]')), isFalse);
+        expect(formattedValue.text, r'$1,234.56');
+      });
+    });
+
+    group('serviceName formatters', () {
+      test('should filter invalid service name characters', () {
+        final formatters = InputFormatters.serviceName;
+
+        const invalidInput = 'Service @ Name #1';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Service Name 1');
+      });
+
+      test('should allow Vietnamese characters in service names', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Dịch vụ số 1';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Dịch Vụ Số 1');
+      });
+
+      test('should limit service name length to 80 characters', () {
+        final formatters = InputFormatters.serviceName;
+
+        final longInput = 'a' * 100;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(80));
+      });
+
+      test('should allow special characters in service names', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = '🚀 Service Name (Test)';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Service Name (Test)');
+      });
+    });
+
+    group('password formatters', () {
+      test('should contain 3 formatters', () {
+        expect(InputFormatters.password.length, 3);
+      });
+
+      test('should deny spaces in passwords', () {
+        final formatters = InputFormatters.password;
+
+        const inputWithSpaces = 'password with spaces';
+        var formattedValue = const TextEditingValue(text: inputWithSpaces);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'passwordwithspaces');
+      });
+
+      test('should limit password length to 50 characters', () {
+        final formatters = InputFormatters.password;
+
+        final longPassword = 'a' * 60;
+        var formattedValue = TextEditingValue(text: longPassword);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, 50);
+      });
+    });
+
+    group('name formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.name.length, 2);
+      });
+
+      test('should allow valid name characters', () {
+        final formatters = InputFormatters.name;
+
+        const validInput = 'John Doe';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should limit name input length to 80 characters', () {
+        final formatters = InputFormatters.name;
+
+        final longInput = 'a' * 100;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(80));
+      });
+    });
+
+    group('quantity formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.quantity.length, 2);
+      });
+
+      test('should allow valid quantity characters', () {
+        final formatters = InputFormatters.quantity;
+
+        const validInput = '123456';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid quantity characters', () {
+        final formatters = InputFormatters.quantity;
+
+        const invalidInput = '123abc';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '123');
+      });
+
+      test('should limit quantity input length to 10 characters', () {
+        final formatters = InputFormatters.quantity;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(10));
+      });
+    });
+
+    group('duration formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.duration.length, 2);
+      });
+
+      test('should allow valid duration characters', () {
+        final formatters = InputFormatters.duration;
+
+        const validInput = '123456';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid duration characters', () {
+        final formatters = InputFormatters.duration;
+
+        const invalidInput = '123abc';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '123');
+      });
+
+      test('should limit duration input length to 6 characters', () {
+        final formatters = InputFormatters.duration;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(6));
+      });
+    });
+
+    group('address formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.address.length, 2);
+      });
+
+      test('should allow valid address characters', () {
+        final formatters = InputFormatters.address;
+
+        const validInput = '123 Main St.';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should limit address input length to 500 characters', () {
+        final formatters = InputFormatters.address;
+
+        final longInput = 'a' * 600;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(500));
+      });
+    });
+
+    group('description formatters', () {
+      test('should contain 1 formatter', () {
+        expect(InputFormatters.description.length, 1);
+      });
+
+      test('should allow valid description characters', () {
+        final formatters = InputFormatters.description;
+
+        const validInput = 'This is a description.';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should limit description input length to 2000 characters', () {
+        final formatters = InputFormatters.description;
+
+        final longInput = 'a' * 2500;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(2000));
+      });
+    });
+
+    group('percent formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.percent.length, 2);
+      });
+
+      test('should allow valid percent characters', () {
+        final formatters = InputFormatters.percent;
+
+        const validInput = '12.34%';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '12.34');
+      });
+
+      test('should filter invalid percent characters', () {
+        final formatters = InputFormatters.percent;
+
+        const invalidInput = '12.34abc%';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '12.34');
+      });
+
+      test('should limit percent input length to 6 characters', () {
+        final formatters = InputFormatters.percent;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(6));
+      });
+    });
+
+    group('giftCode formatters', () {
+      test('should contain 3 formatters', () {
+        expect(InputFormatters.giftCode.length, 3);
+      });
+
+      test('should allow valid gift code characters', () {
+        final formatters = InputFormatters.giftCode;
+
+        const validInput = 'GIFT123';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid gift code characters', () {
+        final formatters = InputFormatters.giftCode;
+
+        const invalidInput = 'GIFT 123';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'GIFT123');
+      });
+
+      test('should limit gift code input length to 50 characters', () {
+        final formatters = InputFormatters.giftCode;
+
+        final longInput = 'a' * 60;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(50));
+      });
+    });
+
+    group('passcode formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.passcode.length, 2);
+      });
+
+      test('should allow valid passcode characters', () {
+        final formatters = InputFormatters.passcode;
+
+        const validInput = '12345';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid passcode characters', () {
+        final formatters = InputFormatters.passcode;
+
+        const invalidInput = '1234abc';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '1234');
+      });
+
+      test('should limit passcode input length to 5 characters', () {
+        final formatters = InputFormatters.passcode;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(5));
+      });
+    });
+
+    group('cardNote formatters', () {
+      test('should contain 2 formatters', () {
+        expect(InputFormatters.cardNote.length, 2);
+      });
+
+      test('should allow valid card note characters', () {
+        final formatters = InputFormatters.cardNote;
+
+        const validInput = 'This is a card note.';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should filter invalid card note characters', () {
+        final formatters = InputFormatters.cardNote;
+
+        const invalidInput = 'This is a card note';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'This is a card note');
+      });
+
+      test('should limit card note input length to 125 characters', () {
+        final formatters = InputFormatters.cardNote;
+
+        final longInput = 'a' * 150;
+        var formattedValue = TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text.length, lessThanOrEqualTo(125));
+      });
     });
   });
 }

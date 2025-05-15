@@ -34,8 +34,14 @@ class InputFormatters {
   /// - `LengthLimitingTextInputFormatter`: Limits the input length to 80 characters.
   /// - `WordsTextInputFormatter`: Custom formatter for word-based input.
   static List<TextInputFormatter> serviceName = [
-    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d +*&().!,\-:;]')),
     LengthLimitingTextInputFormatter(80),
+    FilteringTextInputFormatter.deny(
+      RegExp(
+        r'[^\p{L}\p{N}\s\-_.,&()àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴĐ]',
+        unicode: true,
+      ),
+    ),
+    const StringTrimmingFormatter(trimBetween: true),
     const WordsTextInputFormatter(),
   ];
 

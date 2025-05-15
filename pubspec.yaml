@@ -1,6 +1,6 @@
 name: vuitv
 description: A flutter project code base created by VuiTv ................
-version: 3.27.7
+version: 3.27.8
 
 homepage: https://github.com/vuitv/flutter
 repository: https://github.com/vuitv/flutter.git
@@ -11,7 +11,7 @@ environment:
   sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
-  currency_text_input_formatter: ^2.2.9
+  currency_text_input_formatter: ^2.3.0
   flutter:
     sdk: flutter
 

@@ -1,3 +1,6 @@
+# 3.27.8
+* feat: enhance text input formatters with string trimming and word capitalization features
+* 
 # 3.27.7
 * feat: enhance currency formatting to support trailing zeros and improve test coverage
 * 
