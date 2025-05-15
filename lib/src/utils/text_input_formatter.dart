@@ -371,12 +371,22 @@ class StringTrimmingFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    // Skip trimming if text is being deleted
-    if (oldValue.text.length > newValue.text.length) {
+    // If text is being deleted or no change in length, don't interfere
+    if (oldValue.text.length >= newValue.text.length) {
       return newValue;
     }
 
     final originalText = newValue.text;
+
+    // Check if the only difference is a newly added space character
+    final isAddingSpace = newValue.text.length == oldValue.text.length + 1 &&
+        newValue.text.endsWith(' ') &&
+        !newValue.text.startsWith(' ');
+
+    // Allow adding spaces freely - only apply formatting for non-space additions
+    if (isAddingSpace) {
+      return newValue;
+    }
 
     // First trim leading and trailing whitespace
     var trimmed = originalText.trim();

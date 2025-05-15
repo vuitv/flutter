@@ -447,7 +447,7 @@ void main() {
     test('trims leading and trailing spaces', () {
       const formatter = StringTrimmingFormatter();
       final result = formatter.formatEditUpdate(
-        const TextEditingValue(text: '   hello world   '),
+        TextEditingValue.empty,
         const TextEditingValue(text: '   hello world   '),
       );
       expect(result.text, equals('hello world'));
@@ -456,7 +456,7 @@ void main() {
     test('trims leading and trailing spaces with multiple spaces', () {
       const formatter = StringTrimmingFormatter(trimBetween: true);
       final result = formatter.formatEditUpdate(
-        const TextEditingValue(text: '   hello   world   '),
+        TextEditingValue.empty,
         const TextEditingValue(text: '   hello   world   '),
       );
       expect(result.text, equals('hello world'));
@@ -465,7 +465,7 @@ void main() {
     test('trims leading and trailing spaces with emoji', () {
       const formatter = StringTrimmingFormatter(trimBetween: true);
       final result = formatter.formatEditUpdate(
-        const TextEditingValue(text: '   😀hello world   '),
+        TextEditingValue.empty,
         const TextEditingValue(text: '   😀hello  world   '),
       );
       expect(result.text, equals('😀hello world'));
@@ -475,7 +475,7 @@ void main() {
       const formatter = StringTrimmingFormatter();
       final result = formatter.formatEditUpdate(
         TextEditingValue.empty,
-        TextEditingValue.empty,
+        const TextEditingValue(text: ' '),
       );
       expect(result.text, equals(''));
     });
@@ -483,10 +483,19 @@ void main() {
     test('handles string with only spaces', () {
       const formatter = StringTrimmingFormatter();
       final result = formatter.formatEditUpdate(
-        const TextEditingValue(text: '     '),
+        TextEditingValue.empty,
         const TextEditingValue(text: '     '),
       );
       expect(result.text, equals(''));
+    });
+
+    test('handles string with only spaces and emoji', () {
+      const formatter = StringTrimmingFormatter();
+      final result = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: '😀     '),
+      );
+      expect(result.text, equals('😀'));
     });
   });
 
@@ -745,7 +754,7 @@ void main() {
       test('should allow special characters in service names', () {
         final formatters = InputFormatters.serviceName;
 
-        const validInput = '🚀 Service Name (Test)';
+        const validInput = 'Service Name (test)';
         var formattedValue = const TextEditingValue(text: validInput);
 
         for (final formatter in formatters) {
@@ -756,6 +765,87 @@ void main() {
         }
 
         expect(formattedValue.text, 'Service Name (Test)');
+      });
+
+      test('should allow special characters in service names with emoji', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Service Name (test) 😀';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Service Name (Test)');
+      });
+
+      test('should allow special characters in service names with emoji and numbers', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Service Name (test) 123 😀';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Service Name (Test) 123');
+      });
+
+      test('should allow special characters in service names with emoji and numbers and symbols', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Service Name (test) 123 😀 !@#';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, 'Service Name (Test) 123');
+      });
+
+      test('should allow characters in service names with  space', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Service Name ';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            const TextEditingValue(text: 'Service Name'),
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, validInput);
+      });
+
+      test('should allow characters in service names with  space and emoji', () {
+        final formatters = InputFormatters.serviceName;
+
+        const validInput = 'Service Name 😀 ';
+        const result = 'Service Name';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            const TextEditingValue(text: result),
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, result);
       });
     });
 

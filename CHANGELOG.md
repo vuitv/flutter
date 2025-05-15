@@ -1,13 +1,16 @@
+# 3.27.9
+* feat: enhance text input formatters with string trimming and word capitalization features
+
 # 3.27.8
 * feat: enhance text input formatters with string trimming and word capitalization features
-* 
+
 # 3.27.7
 * feat: enhance currency formatting to support trailing zeros and improve test coverage
-* 
+
 # 3.27.6
 * fix: formater phone AU add support for number correction in CountryPhoneInputFormatter
 
-* # 3.27.5
+# 3.27.5
 * feat: enhance currency formatting and add comprehensive input formatters
 
 # 3.27.4
@@ -56,23 +59,23 @@
 * feat: JsonConverter() function 🎉
 * feat: TextInputFormatter() function 🎉
 
-## 0.0.7
+# 0.0.7
 * Theme config
 
-## 0.0.6
+# 0.0.6
 * Add color context extension
 
-## 0.0.5
+# 0.0.5
 * Add color context extension
 
-## 0.0.4
+# 0.0.4
 * Add app config
 
-## 0.0.3
+# 0.0.3
 * Initial Open Source release.
 
-## 0.0.2
+# 0.0.2
 * Initial Open Source release.
 
-## 0.0.1
+# 0.0.1
 * Initial Open Source release.
