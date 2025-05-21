@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  vuitv: ^3.27.8
+  vuitv: ^3.28.0
 ```
 
 ## Features
@@ -84,7 +84,7 @@ final sentenceCaps = TextCapitalizationFormatter.sentences();
 
 ---
 
-[pub_badge]: https://img.shields.io/badge/pub-3.27.8-blue
+[pub_badge]: https://img.shields.io/badge/pub-3.28.0-blue
 [pub_link]: https://pub.dev/packages/vuitv
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

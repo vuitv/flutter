@@ -8,9 +8,9 @@ class InputFormatters {
   /// - `FilteringTextInputFormatter.allow`: Allows only digits, spaces, parentheses, and hyphens.
   /// - `LengthLimitingTextInputFormatter`: Limits the input length to 14 characters.
   static List<TextInputFormatter> phone = [
+    LengthPhoneInputFormatter(),
     CountryPhoneInputFormatter(),
     FilteringTextInputFormatter.allow(RegExp(r'[\d ()-]')),
-    LengthLimitingTextInputFormatter(14),
   ];
 
   /// Formatters for email input.

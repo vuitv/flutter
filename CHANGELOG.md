@@ -1,3 +1,6 @@
+# 3.28.0
+* feat: add toRawPhoneNumber method and LengthPhoneInputFormatter for phone number input handling
+
 # 3.27.9
 * feat: enhance text input formatters with string trimming and word capitalization features
 

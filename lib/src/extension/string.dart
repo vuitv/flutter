@@ -56,7 +56,7 @@ extension StringExt on String {
   /// '+1 (123) 456-7890'.toRawPhoneNumber()  // Returns '+11234567890'
   /// ```
   String toRawPhoneNumber() {
-    return replaceAll(RegExp('[ ()-]'), '');
+    return replaceAll(RegExp(r'\D'), '');
   }
 
   /// Returns the first character of the string as an initial.

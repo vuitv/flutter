@@ -294,5 +294,30 @@ void main() {
         expect('invalid'.toPhoneNumber(), 'invalid');
       });
     });
+    group('toRawPhoneNumber()', () {
+      test('removes formatting from phone number', () {
+        expect('(123) 456-7890'.toRawPhoneNumber(), equals('1234567890'));
+      });
+
+      test('handles empty string', () {
+        expect(''.toRawPhoneNumber(), equals(''));
+      });
+
+      test('returns empty string for invalid input', () {
+        expect('invalid'.toRawPhoneNumber(), '');
+      });
+
+      test('handles international format', () {
+        expect('+1 (123) 456-7890'.toRawPhoneNumber(), equals('11234567890'));
+      });
+
+      test('handles phone number with spaces', () {
+        expect('123 456 7890'.toRawPhoneNumber(), equals('1234567890'));
+      });
+
+      test('handles phone number with dashes', () {
+        expect('123-456-7890'.toRawPhoneNumber(), equals('1234567890'));
+      });
+    });
   });
 }

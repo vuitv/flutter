@@ -141,6 +141,31 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
       );
 }
 
+/// A [TextInputFormatter] that limits the length of phone number input.
+///
+/// This formatter allows a maximum of 14 characters and ensures that
+/// only 10 digits (0-9) are allowed.
+class LengthPhoneInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+
+    if (text.length > 14) {
+      return oldValue;
+    }
+
+    final digitCount = RegExp(r'\d').allMatches(text).length;
+    if (digitCount > 10) {
+      return oldValue;
+    }
+
+    return newValue;
+  }
+}
+
 /// A [TextInputFormatter] that formats hex color input.
 ///
 /// Ensures the input starts with '#' and converts to uppercase.

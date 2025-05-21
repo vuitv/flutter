@@ -538,7 +538,7 @@ void main() {
         expect(formattedValue.text, '(123) 456');
       });
 
-      test('should limit phone input length to 14 characters', () {
+      test('should limit phone input length to 10 characters digital', () {
         final formatters = InputFormatters.phone;
 
         const longInput = '12345678901234567890';
@@ -546,12 +546,30 @@ void main() {
 
         for (final formatter in formatters) {
           formattedValue = formatter.formatEditUpdate(
-            TextEditingValue.empty,
+            const TextEditingValue(text: '1234567890'),
             formattedValue,
           );
         }
+        expect(formattedValue.text, '(123) 456-7890');
+        expect(formattedValue.text.length, equals(14));
+        final digitsOnly = formattedValue.text.toRawPhoneNumber();
+        expect(digitsOnly.length, equals(10));
+      });
 
-        expect(formattedValue.text.length, lessThanOrEqualTo(14));
+      test('should limit phone input length to 14 characters with mask', () {
+        final formatters = InputFormatters.phone;
+
+        const longInput = '12345678901234567890';
+        var formattedValue = const TextEditingValue(text: longInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            const TextEditingValue(text: '1234567890'),
+            formattedValue,
+          );
+        }
+        expect(formattedValue.text, '(123) 456-7890');
+        expect(formattedValue.text.length, equals(14));
       });
     });
 
