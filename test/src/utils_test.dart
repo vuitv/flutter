@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vuitv/vuitv.dart';
 
@@ -79,7 +78,7 @@ void main() {
     group('us formats', () {
       test('currency formatter handles edge cases', () {
         CountryCodes.current = 'US';
-        final formatter = CountryCurrencyInputFormatter.auto();
+        final formatter = CurrencyInputFormatter.format();
 
         // Test with empty string
         expect(
@@ -116,15 +115,11 @@ void main() {
       });
 
       test('formatter preserves appropriate selection', () {
-        CountryCodes.current = 'US';
-        final formatter = CountryCurrencyInputFormatter.auto();
+        final formatter = CurrencyInputFormatter.format();
 
         final result = formatter.formatEditUpdate(
           const TextEditingValue(text: '123'),
-          const TextEditingValue(
-            text: '1234',
-            selection: TextSelection.collapsed(offset: 4),
-          ),
+          const TextEditingValue(text: '1234'),
         );
 
         // Check both text and selection positioning
@@ -134,7 +129,7 @@ void main() {
 
       test('formatter with mocked country code', () {
         CountryCodes.current = 'US'; // Set known state
-        final formatter = CountryCurrencyInputFormatter.auto();
+        final formatter = CurrencyInputFormatter.format();
         final result = formatter.formatEditUpdate(
           TextEditingValue.empty,
           const TextEditingValue(text: '1234.56'),
@@ -147,7 +142,7 @@ void main() {
     group('vn formats', () {
       test('vn formats dong with 0 decimal places', () {
         CountryCodes.current = 'VN';
-        final formatter = CountryCurrencyInputFormatter.auto();
+        final formatter = CurrencyInputFormatter.format();
         const newValue = TextEditingValue(text: '1234');
         final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
         expect(formattedValue.text, equals('1,234₫'));
@@ -155,7 +150,7 @@ void main() {
 
       test('vn formats dong with 2 decimal places', () {
         CountryCodes.current = 'VN';
-        final formatter = CountryCurrencyInputFormatter.auto();
+        final formatter = CurrencyInputFormatter.format();
         const newValue = TextEditingValue(text: '1234.56');
         final formattedValue = formatter.formatEditUpdate(oldValue, newValue);
         expect(formattedValue.text, equals('123,456₫'));
@@ -202,10 +197,8 @@ void main() {
   });
 
   group('PhoneInputFormatter', () {
-    CountryPhoneInputFormatter.setPhoneMask();
     test('formats US phone number correctly', () {
-      CountryCodes.current = 'US';
-      final formater = CountryPhoneInputFormatter();
+      final formater = PhoneInputFormatter(defaultCountryCode: 'US');
       final formattedValue = formater.formatEditUpdate(
         const TextEditingValue(text: '123456789'),
         const TextEditingValue(text: '1234567890'),
@@ -214,30 +207,44 @@ void main() {
       expect(formater.masked, equals('(123) 456-7890'));
       expect(formater.unmasked, equals('1234567890'));
       expect(formater.format('1234567890'), equals('(123) 456-7890'));
-      expect(formater.format('123456'), equals('(123) 456'));
-      expect(formater.format('123'), equals('(123'));
+      expect(formater.format('123456'), equals('123456'));
+      expect(formater.format('123'), equals('123'));
     });
 
     test('formats AU phone number with country code', () {
-      CountryCodes.current = 'AU';
-      final formater = CountryPhoneInputFormatter();
+      final formater = PhoneInputFormatter(defaultCountryCode: 'AU');
+      final formaterCorrect = PhoneInputFormatter(
+        defaultCountryCode: 'AU',
+        shouldCorrectNumber: true,
+      );
       final result = formater.formatEditUpdate(
         TextEditingValue.empty,
         const TextEditingValue(text: '0423456789'),
       );
-      expect(result.text, equals('0423 456 789'));
+      final resultCorrect = formaterCorrect.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: '0123456789'),
+      );
+      expect(result.text, equals('04 2345 6789'));
+      expect(resultCorrect.text, equals('01 2345 6789'));
 
-      expect(formater.format('0423456789', 'AU'), equals('0423 456 789'));
-      expect(formater.format('123456', 'AU'), equals('1234 56'));
+      expect(formater.format('0423456789', 'AU'), equals('04 2345 6789'));
+      expect(formater.format('0123456789', 'AU'), equals('01 2345 6789'));
+      expect(formaterCorrect.format('0123456789', 'AU'), equals('01 2345 6789'));
+
       expect(formater.format('123', 'AU'), equals('123'));
       expect(formater.format('04', 'AU'), equals('04'));
     });
 
     test('formats VN phone number correctly', () {
-      CountryCodes.current = 'VN';
-      final formater = CountryPhoneInputFormatter();
+      final formater = PhoneInputFormatter(defaultCountryCode: 'VN');
+      final result = formater.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: '0323456789'),
+      );
+      expect(result.text, equals('0323 456 789'));
       expect(formater.format('1234567890', 'VN'), equals('1234 567 890'));
-      expect(formater.format('123456', 'VN'), equals('1234 56'));
+      expect(formater.format('123456', 'VN'), equals('123456'));
       expect(formater.format('123', 'VN'), equals('123'));
     });
   });
@@ -502,7 +509,7 @@ void main() {
   /// Test for formatters that are not covered above.
   group('InputFormatters', () {
     group('phone formatters', () {
-      test('should contain 3 formatters', () {
+      test('should contain 3 formatters and country US', () {
         CountryCodes.current = 'US';
         expect(InputFormatters.phone.length, 3);
       });
@@ -571,6 +578,59 @@ void main() {
         expect(formattedValue.text, '(123) 456-7890');
         expect(formattedValue.text.length, equals(14));
       });
+
+      test('should contain 3 formatters and country AU', () {
+        CountryCodes.current = 'AU';
+        expect(InputFormatters.phone.length, 3);
+      });
+
+      test('should format AU phone number correctly', () {
+        final formatters = InputFormatters.phone;
+
+        const validInput = '0423456789';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '04 2345 6789');
+      });
+      test('should format AU phone number with country code', () {
+        final formatters = InputFormatters.phone;
+
+        const validInput = '0123456789';
+        var formattedValue = const TextEditingValue(text: validInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '01 2345 6789');
+      });
+
+      test('should filter invalid AU phone characters', () {
+        final formatters = InputFormatters.phone;
+
+        const invalidInput = '0423-456-789';
+        var formattedValue = const TextEditingValue(text: invalidInput);
+
+        for (final formatter in formatters) {
+          formattedValue = formatter.formatEditUpdate(
+            TextEditingValue.empty,
+            formattedValue,
+          );
+        }
+
+        expect(formattedValue.text, '04 2345 6789');
+      });
+
     });
 
     group('email formatters', () {

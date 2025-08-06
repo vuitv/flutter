@@ -39,7 +39,7 @@ extension StringExt on String {
   /// '1234567890'.toPhoneNumber('US')      // Formats using US rules: (123) 456-7890
   /// ```
   String toPhoneNumber([String? countryCode]) {
-    return CountryPhoneInputFormatter().format(
+    return PhoneInputFormatter(defaultCountryCode: countryCode).format(
       this,
       countryCode,
     );

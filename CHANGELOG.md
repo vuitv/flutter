@@ -1,3 +1,12 @@
+# 3.28.1
+* feat: refactor phone and currency formatters for improved functionality and consistency
+* BREAKING CHANGE: 
+  - dependency `flutter_multi_formatter: 2.13.7`
+  - `CountryPhoneInputFormatter` changed to `PhoneInputFormatter` for consistency
+  - `CountryCurrencyInputFormatter` changed to `CurrencyInputFormatter` for consistency
+  - `CurrencyInputFormatter.auto` changed to `CurrencyInputFormatter.format` for clarity
+  - removed `PhoneInputFormatter.setPhoneMask` method, auto-detection of phone masks is now handled internally
+
 # 3.28.0
 * feat: add toRawPhoneNumber method and LengthPhoneInputFormatter for phone number input handling
 

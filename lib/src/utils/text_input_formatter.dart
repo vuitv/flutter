@@ -1,34 +1,34 @@
 import 'dart:math';
 
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart' as currency;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart' as formatter;
 import 'package:intl/intl.dart';
 import 'package:vuitv/src/core/country_codes.dart';
 
 /// A utility class for formatting currency input in different locales.
-abstract class CountryCurrencyInputFormatter {
-  CountryCurrencyInputFormatter._();
+abstract class CurrencyInputFormatter {
+  CurrencyInputFormatter._();
 
-  /// Creates a new [CountryCurrencyInputFormatter] with optional country code.
+  /// Creates a new [CurrencyInputFormatter] with optional country code.
   ///
   /// If no country code is provided, the current locale will be used.
   ///
-  static CurrencyTextInputFormatter auto({String? countryCode}) {
+  static currency.CurrencyTextInputFormatter format({String? countryCode}) {
     final locale = (countryCode ?? CountryCodes.current).toUpperCase();
     return locale == 'VN' ? vn() : us();
   }
 
-  /// Creates a new [CountryCurrencyInputFormatter] with the specified locale.
-  static CurrencyTextInputFormatter us() => CurrencyTextInputFormatter.currency(
+  /// Creates a new [CurrencyInputFormatter] with the specified locale.
+  static currency.CurrencyTextInputFormatter us() => currency.CurrencyTextInputFormatter.currency(
         locale: 'en',
         symbol: r'$',
         decimalDigits: 2,
       );
 
-  /// Creates a new [CountryCurrencyInputFormatter] with the specified locale.
-  static CurrencyTextInputFormatter vn() => CurrencyTextInputFormatter.currency(
+  /// Creates a new [CurrencyInputFormatter] with the specified locale.
+  static currency.CurrencyTextInputFormatter vn() => currency.CurrencyTextInputFormatter.currency(
         symbol: '₫',
         decimalDigits: 0,
         customPattern: '###,###₫',
@@ -77,45 +77,53 @@ class NumberDigitsInputFormatter extends TextInputFormatter {
   }
 }
 
-/// A [CountryPhoneInputFormatter] that formats phone numbers according
+/// A [PhoneInputFormatter] that formats phone numbers according
 /// to locale patterns.
 ///
 /// Supports US format: (XXX) XXX-XXXX
 /// Australian format: XXXX XXX XXX
 /// and Vietnamese format: XXXX XXX XXX
-class CountryPhoneInputFormatter extends PhoneInputFormatter {
-  /// Creates a new [CountryPhoneInputFormatter] with optional locale.
+class PhoneInputFormatter extends formatter.PhoneInputFormatter {
+  /// Creates a new [PhoneInputFormatter] with optional locale.
   ///
   /// If no locale is provided, US format will be used.
-  factory CountryPhoneInputFormatter({
-    bool allowEndlessPhone = true,
+  factory PhoneInputFormatter({
     String? defaultCountryCode,
+    bool allowEndlessPhone = false,
     bool shouldCorrectNumber = false,
   }) {
-    return CountryPhoneInputFormatter._(
+    _setPhoneMask();
+    return PhoneInputFormatter._(
+      defaultCountryCode: defaultCountryCode,
       allowEndlessPhone: allowEndlessPhone,
-      defaultCountryCode: defaultCountryCode ?? CountryCodes.current,
       shouldCorrectNumber: shouldCorrectNumber,
     );
   }
 
-  CountryPhoneInputFormatter._({
+  PhoneInputFormatter._({
     super.defaultCountryCode,
     super.allowEndlessPhone,
     super.shouldCorrectNumber,
   });
 
-  /// Setup method to initialize phone masks for different countries.
-  static void setPhoneMask() {
-    PhoneInputFormatter.replacePhoneMask(
+  static bool? _isInitialized;
+
+  static void _setPhoneMask() {
+    if (_isInitialized ?? false) return;
+    _isInitialized = true;
+    formatter.PhoneInputFormatter.replacePhoneMask(
       countryCode: 'US',
       newMask: '+0 (000) 000-0000',
     );
-    PhoneInputFormatter.replacePhoneMask(
+    formatter.PhoneInputFormatter.replacePhoneMask(
       countryCode: 'AU',
-      newMask: '+00 0000 000 000',
+      newMask: '+00 00 0000 0000',
     );
-    PhoneInputFormatter.replacePhoneMask(
+    formatter.PhoneInputFormatter.addAlternativePhoneMasks(
+      countryCode: 'AU',
+      alternativeMasks: ['+00 00 0000 0000'],
+    );
+    formatter.PhoneInputFormatter.replacePhoneMask(
       countryCode: 'VN',
       newMask: '+00 0000 000 000',
     );
@@ -125,16 +133,23 @@ class CountryPhoneInputFormatter extends PhoneInputFormatter {
   ///
   /// Uses Vietnamese format for 'vi' locale, US format otherwise.
   String format(String text, [String? countryCode]) {
-    return formatAsPhoneNumber(
+    _setPhoneMask();
+    return formatter.formatAsPhoneNumber(
           text,
-          allowEndlessPhone: true,
-          defaultCountryCode: countryCode ?? CountryCodes.current,
+          allowEndlessPhone: allowEndlessPhone,
+          defaultCountryCode: countryCode ?? defaultCountryCode,
+          invalidPhoneAction: shouldCorrectNumber
+              ? formatter.InvalidPhoneAction.DoNothing
+              : formatter.InvalidPhoneAction.ShowUnformatted,
         ) ??
         '';
   }
 
   @override
-  String get unmasked => toNumericString(
+  String get defaultCountryCode => (super.defaultCountryCode ?? CountryCodes.current).toUpperCase();
+
+  @override
+  String get unmasked => formatter.toNumericString(
         masked,
         allowHyphen: false,
         allowAllZeroes: true,

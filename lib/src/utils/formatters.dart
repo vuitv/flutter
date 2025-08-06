@@ -8,9 +8,9 @@ class InputFormatters {
   /// - `FilteringTextInputFormatter.allow`: Allows only digits, spaces, parentheses, and hyphens.
   /// - `LengthLimitingTextInputFormatter`: Limits the input length to 14 characters.
   static List<TextInputFormatter> phone = [
-    LengthPhoneInputFormatter(),
-    CountryPhoneInputFormatter(),
     FilteringTextInputFormatter.allow(RegExp(r'[\d ()-]')),
+    LengthPhoneInputFormatter(),
+    PhoneInputFormatter(),
   ];
 
   /// Formatters for email input.
@@ -60,7 +60,7 @@ class InputFormatters {
   /// - `FilteringTextInputFormatter.allow`: Allows digits, '.', '$', ',', and '₫'.
   /// - `LengthLimitingTextInputFormatter`: Limits the input length to 10 characters.
   static List<TextInputFormatter> price = [
-    CountryCurrencyInputFormatter.auto(),
+    CurrencyInputFormatter.format(),
     FilteringTextInputFormatter.allow(RegExp(r'[\d.$,₫]')),
     LengthLimitingTextInputFormatter(10),
   ];

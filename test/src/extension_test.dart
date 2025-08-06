@@ -283,11 +283,29 @@ void main() {
     });
     group('toPhoneNumber()', () {
       test('formats phone number with country code', () {
-        expect('1234567890'.toPhoneNumber('US'), equals('(123) 456 7890'));
+        expect('1234567890'.toPhoneNumber('US'), equals('(123) 456-7890'));
+        expect('0123456789'.toPhoneNumber('US'), equals('(012) 345-6789'));
+        expect('4026133068'.toPhoneNumber('US'), equals('(402) 613-3068'));
+      });
+      test('formats phone number with country code Unknown', () {
+        expect('1234567890'.toPhoneNumber('Unknown'), equals('1234567890'));
+        expect('0123456789'.toPhoneNumber('Unknown'), equals('0123456789'));
       });
 
+      test('formats phone number with country code AU', () {
+        expect('1234567890'.toPhoneNumber('AU'), equals('12 3456 7890'));
+        expect('0423456789'.toPhoneNumber('AU'), equals('04 2345 6789'));
+      });
+
+      test('formats phone number with country code and custom format', () {
+        expect('0357654321'.toPhoneNumber('VN'), equals('0357 654 321'));
+        expect('9876543210'.toPhoneNumber('VN'), equals('9876 543 210'));
+      });
+
+
+
       test('formats phone number without country code', () {
-        expect('1234567890'.toPhoneNumber(), equals('(123) 456 7890'));
+        expect('1234567890'.toPhoneNumber(), equals('(123) 456-7890'));
       });
 
       test('returns empty string for invalid input', () {

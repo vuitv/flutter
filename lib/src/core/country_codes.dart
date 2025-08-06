@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+import 'package:intl/locale.dart';
+
 /// This file contains a list of country codes and their corresponding names.
 /// It is used to manage the current country code and provide a mapping of country codes to their names.
 ///
@@ -22,5 +25,19 @@
 /// to be easily extensible, allowing developers to add more countries as needed.
 class CountryCodes {
   /// Sets the current country code.
-  static String current = 'US';
+  static String get current => _country ?? _getIntlCountry;
+
+  static set current(String country) {
+    _country = country;
+  }
+
+  /// A map of country codes to their corresponding country names.
+  static String defaultCountry = 'US';
+
+  static String get _getIntlCountry {
+    final locale = Locale.tryParse(Intl.defaultLocale ?? Intl.systemLocale);
+    return locale?.countryCode ?? defaultCountry;
+  }
+
+  static String? _country;
 }
